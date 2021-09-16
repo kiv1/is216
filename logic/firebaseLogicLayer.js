@@ -63,9 +63,9 @@ async function updateBio(userId, newBio) {
         .update({ bio: newBio });
 }
 
-async function checkDocExists(userId, collection) {
+async function checkDocExists(userId, documentName) {
     let usersCollection = database.collection(userId);
-    let doc = await usersCollection.doc('collection').get();
+    let doc = await usersCollection.doc(documentName).get();
     return doc.exists;
 }
 
