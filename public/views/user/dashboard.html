@@ -15,6 +15,21 @@
                 <div class="d-flex flex-column h-75 justify-content-center align-items-center">
                     <h1>Dashboard</h1>
                     <p>(Only accessible only when logged in)</p>
+                    <p>The bio below is taken from Firestore :)</p>
+                    <p>{{bio}}</p>
+                    <form>
+                        <div class="form-group">
+                            <input type="text" v-model="updateBio" class="form-control" placeholder="New Bio" />
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <button type="reset" class="btn btn-outline-danger">Clear</button>
+                            <button @click="updateUserBio()" class="btn btn-outline-primary float-end" type="button">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                    <p class="text-danger">{{errorMsg}}</p>
                 </div>
             </div>
         </div>
@@ -25,10 +40,46 @@
             data() {
                 return {
                     isLoading: false,
+                    bio: '',
+                    updateBio: '',
+                    errorMsg: '',
                 };
             },
-            mounted() {},
-            methods: {},
+            mounted() {
+                this.isLoading = true;
+                let getData = [this.getUserBio()];
+                Promise.all(getData).then(() => {
+                    this.isLoading = false;
+                });
+            },
+            methods: {
+                getUserBio() {
+                    return axios
+                        .get('../userApi/GetBio')
+                        .then(({ data }) => {
+                            this.bio = data.bioData;
+                            this.isLogin = true;
+                        })
+                        .catch((error) => {
+                            this.isLogin = false;
+                        });
+                },
+                updateUserBio() {
+                    this.isLoading = true;
+                    axios
+                        .post('../userApi/UpdateBio', {
+                            bio: this.updateBio,
+                        })
+                        .then((response) => {
+                            location.reload();
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            this.isLoading = false;
+                            this.errorMsg = 'The update went wrong! Please try again later';
+                        });
+                },
+            },
         });
         app.component('navbar-component', navbar);
         app.component('loading-component', loadingPage);

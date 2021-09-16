@@ -12,9 +12,14 @@ router.get('/logout', (req, res) => {
     res.redirect('/user');
 });
 
-router.get('/savecookie', (req, res) => {
-    const Idtoken = req.query.idToken;
-    setCookie(Idtoken, res);
+router.get('/savecookie', async (req, res) => {
+    try {
+        const Idtoken = req.query.idToken;
+        setCookie(Idtoken, res);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('An Unexpected Error occured');
+    }
 });
 
 router.get('/dashboard', checkCookie, (req, res) => {
@@ -32,6 +37,7 @@ async function setCookie(idtoken, res) {
         if (!user) {
             throw 'UnAuthorised Request';
         }
+        await firebaseLL.addUserSetting(user.user_id);
         let sessionCookie = await firebaseLL.createCookie(idtoken);
         const expiresIn = 60 * 60 * 24 * 5 * 1000;
         const options = { maxAge: expiresIn, httpOnly: true, secure: true };
@@ -49,6 +55,9 @@ function checkCookie(req, res, next) {
         .getUser(sessionCookie)
         .then(decodedClaims => {
             req.decodedClaims = decodedClaims;
+            if (req.route.path == '/') {
+                res.redirect('/user/dashboard');
+            }
             next();
         })
         .catch(error => {

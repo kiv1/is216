@@ -21,6 +21,7 @@ admin.initializeApp({
         project_id: PROJECT_ID,
     }),
 });
+const database = admin.firestore();
 
 function getGoogleData() {
     return {
@@ -33,6 +34,41 @@ function getGoogleData() {
     };
 }
 
+async function addUserSetting(userId) {
+    let usersCollection = await database.collection(userId);
+    let result = await checkDocExists(userId, 'Settings');
+    if (!result) {
+        let userSetting = usersCollection.doc('Settings');
+        return await userSetting.set({
+            bio: 'Hi there! Nice to meet you!',
+        });
+    } else {
+        return Promise.resolve();
+    }
+}
+
+async function getBio(userId) {
+    let doc = await database
+        .collection(userId)
+        .doc('Settings')
+        .get();
+    let bio = doc.get('bio');
+    return bio;
+}
+
+async function updateBio(userId, newBio) {
+    return await database
+        .collection(userId)
+        .doc('Settings')
+        .update({ bio: newBio });
+}
+
+async function checkDocExists(userId, collection) {
+    let usersCollection = database.collection(userId);
+    let doc = await usersCollection.doc('collection').get();
+    return doc.exists;
+}
+
 async function createCookie(idToken) {
     const expiresIn = 60 * 60 * 24 * 5 * 1000;
     return await admin.auth().createSessionCookie(idToken, { expiresIn });
@@ -43,4 +79,4 @@ async function verifyUser(idToken) {
 async function getUser(sessionToken) {
     return await admin.auth().verifySessionCookie(sessionToken, true);
 }
-module.exports = { getGoogleData, createCookie, verifyUser, getUser };
+module.exports = { getGoogleData, createCookie, verifyUser, getUser, addUserSetting, getBio, updateBio };
