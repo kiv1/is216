@@ -1,6 +1,6 @@
 # Preview Link
-### - [Preview][previewLink]
-> Note: Building on serve takes at least 10 - 20 minutes do be patient
+### [Preview][previewLink]
+> Note: Building on server takes at least 10 - 20 minutes. Do be patient
 
 # Prerequisite
 
