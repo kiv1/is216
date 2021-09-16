@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <title>Express</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
+        <script src="/javascripts/bundle.js"></script>
+        <!-- Firebase Package-->
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+        <!-- Loads the login UI elements-->
+        <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script>
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css"
+        />
+    </head>
+
+    <body>
+        <div id="app">
+            <navbar-component></navbar-component>
+            <loading-component v-show="isLoading"></loading-component>
+            <div class="container-xxl">
+                <div class="d-flex flex-column h-75 justify-content-center align-items-center">
+                    <h1 class="text-center">Login</h1>
+                    <div id="firebaseui-auth-container"></div>
+                    <p class="text-danger">{{errorMessage}}</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        const app = Vue.createApp({
+            el: '#app',
+            data() {
+                return {
+                    isLoading: false,
+                    errorMessage: '',
+                    config: {
+                        apiKey: '',
+                        authDomain: '',
+                        projectId: '',
+                        storageBucket: '',
+                        messagingSenderId: '',
+                        appId: '',
+                    },
+                    uiConfig: {
+                        signInOptions: [
+                            // Google sign in option
+                            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                        ],
+                        signInFlow: 'popup',
+                        callbacks: {
+                            signInFailure: function (error) {
+                                this.setErrorMessage('There was a problem with your login. Please try again later');
+                                return Promise.resolve();
+                            },
+                            signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+                                // User successfully signed in.
+                                this.isLoading = true;
+                                this.errorMessage = '';
+                                authResult.user
+                                    .getIdToken()
+                                    .then(function (idToken) {
+                                        window.location.href = '/user/savecookie?idToken=' + idToken;
+                                    })
+                                    .catch((error) => {
+                                        this.setErrorMessage(
+                                            'There was a problem with your login. Please try again later'
+                                        );
+                                    });
+                            },
+                        },
+                    },
+                };
+            },
+            mounted() {
+                this.isLoading = true;
+                let getData = [this.getGoogleData()];
+                Promise.all(getData).then(() => {
+                    this.setFirebaseConfig();
+                });
+            },
+            methods: {
+                setErrorMessage(msg) {
+                    this.isLoading = false;
+                    this.errorMessage = msg;
+                },
+                getGoogleData() {
+                    return axios
+                        .get('../userApi/GetGoogleData')
+                        .then(({ data }) => {
+                            this.errorMessage = '';
+                            this.config.apiKey = data.apiKey;
+                            this.config.authDomain = data.authDomain;
+                            this.config.projectId = data.projectId;
+                            this.config.storageBucket = data.storageBucket;
+                            this.config.messagingSenderId = data.msgSenderId;
+                            this.config.appId = data.appId;
+                            this.isLoading = false;
+                        })
+                        .catch((error) => {
+                            this.setErrorMessage('There was a problem with your login. Please try again later');
+                        });
+                },
+                setFirebaseConfig() {
+                    firebase.initializeApp(this.config);
+                    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+                    // Initialize the FirebaseUI Widget using Firebase.
+                    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                    // The start method will wait until the DOM is loaded.
+                    console.log(ui.isPendingRedirect());
+                    if (ui.isPendingRedirect()) {
+                        this.isLoading = true;
+                    } else {
+                        this.isLoading = false;
+                    }
+                    ui.start('#firebaseui-auth-container', this.uiConfig);
+                },
+            },
+        });
+        app.component('navbar-component', navbar);
+        app.component('loading-component', loadingPage);
+        app.mount('#app');
+    </script>
+</html>

@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>Express</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
+        <script src="/javascripts/bootstrap.bundle.min.js"></script>
+        <script src="/javascripts/bundle.js"></script>
+    </head>
+
+    <body>
+        <div id="app">
+            <navbar-component></navbar-component>
+            <loading-component v-show="isLoading"></loading-component>
+            <div class="container-xxl">
+                <div class="d-flex flex-column h-75 justify-content-center align-items-center">
+                    <h1>Home</h1>
+                    <p>This is the home page</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        const app = Vue.createApp({
+            el: '#app',
+            data() {
+                return {
+                    isLoading: false,
+                };
+            },
+            mounted() {
+                // this.isLoading = true;
+                // let getData = [this.getUserData()];
+                // Promise.all(getData).then(() => {
+                //     this.isLoading = false;
+                // });
+            },
+            methods: {},
+        });
+        app.component('navbar-component', navbar);
+        app.component('loading-component', loadingPage);
+        app.mount('#app');
+    </script>
+</html>
