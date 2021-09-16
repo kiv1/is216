@@ -1,3 +1,7 @@
+# Preview Link
+### - [Preview][previewLink]
+> Note: Building on serve takes at least 10 - 20 minutes do be patient
+
 # Prerequisite
 
 **Please install the following first**
@@ -14,6 +18,7 @@
 [nodelink]: https://nodejs.org/dist/v14.17.6/node-v14.17.6-x64.msi
 [yarnlink]: https://yarnpkg.com/getting-started/install
 [vscodelink]: https://code.visualstudio.com
+[previewLink]: https://is216.azurewebsites.net/
 
 # After clonning the repo
 
