@@ -17,14 +17,25 @@
                     <p>(Only accessible only when logged in)</p>
                     <p>The bio below is taken from Firestore :)</p>
                     <p>{{bio}}</p>
-                    <form>
+                    <form v-on:keyup.enter="updateUserBio()">
                         <div class="form-group">
-                            <input type="text" v-model="updateBio" class="form-control" placeholder="New Bio" />
+                            <input
+                                type="text"
+                                v-model="updateBio"
+                                class="form-control"
+                                placeholder="New Bio"
+                                required
+                            />
                         </div>
                         <br />
                         <div class="form-group">
                             <button type="reset" class="btn btn-outline-danger">Clear</button>
-                            <button @click="updateUserBio()" class="btn btn-outline-primary float-end" type="button">
+                            <button
+                                :disabled="!updateBio"
+                                @click="updateUserBio()"
+                                class="btn btn-outline-primary float-end"
+                                type="button"
+                            >
                                 Submit
                             </button>
                         </div>
@@ -65,19 +76,21 @@
                         });
                 },
                 updateUserBio() {
-                    this.isLoading = true;
-                    axios
-                        .post('../userApi/UpdateBio', {
-                            bio: this.updateBio,
-                        })
-                        .then((response) => {
-                            location.reload();
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            this.isLoading = false;
-                            this.errorMsg = 'The update went wrong! Please try again later';
-                        });
+                    if (this.updateBio) {
+                        this.isLoading = true;
+                        axios
+                            .post('../userApi/UpdateBio', {
+                                bio: this.updateBio,
+                            })
+                            .then((response) => {
+                                location.reload();
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                this.isLoading = false;
+                                this.errorMsg = 'The update went wrong! Please try again later';
+                            });
+                    }
                 },
             },
         });
