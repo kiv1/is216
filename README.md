@@ -62,8 +62,6 @@ To use component on a page ensure that the component is registered on the HTML p
 app.component('navbar-component', navbar);
 ```
 
-Add your modified css in `style.css` found `in public/css`
-
 Vue has already been installed and bundled in the `bundle.js`
 Every HTML page should have the following in the head
 
