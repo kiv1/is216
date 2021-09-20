@@ -22,9 +22,9 @@ router.get('/savecookie', async (req, res) => {
     }
 });
 
-router.get('/dashboard', checkCookie, (req, res) => {
+router.get('/demo', checkCookie, (req, res) => {
     console.log('UID of Signed in User is' + req.decodedClaims.uid);
-    res.sendFile(path.join(__dirname, '../public/views/user', 'dashboard.html'), { dotfiles: 'allow' });
+    res.sendFile(path.join(__dirname, '../public/views/user', 'demo.html'), { dotfiles: 'allow' });
 });
 
 // // Saving cookies and verify cookies
@@ -42,7 +42,7 @@ async function setCookie(idtoken, res) {
         const expiresIn = 60 * 60 * 24 * 5 * 1000;
         const options = { maxAge: expiresIn, httpOnly: true, secure: true };
         res.cookie('session', sessionCookie, options);
-        res.redirect('/user/dashboard');
+        res.redirect('/user/demo');
     } catch (err) {
         console.log(err);
         res.status(401).send('UnAuthorised Request');
@@ -56,7 +56,7 @@ function checkCookie(req, res, next) {
         .then(decodedClaims => {
             req.decodedClaims = decodedClaims;
             if (req.route.path == '/') {
-                res.redirect('/user/dashboard');
+                res.redirect('/user/demo');
             }
             next();
         })

@@ -16,9 +16,10 @@ const baseConfig = {
             },
         ],
     },
+
     output: {
-        path: path.resolve(__dirname, 'public', 'javascripts'),
-        publicPath: '/',
+        path: path.resolve(__dirname, 'public', 'dist'),
+        publicPath: '/dist/',
         filename: '[name].js',
     },
     resolve: {

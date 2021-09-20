@@ -2,18 +2,21 @@
     <head>
         <title>Express</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/stylesheets/style.css" />
-        <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
-        <script src="/javascripts/bundle.js"></script>
+        <link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <script src="/dist/bundle.js"></script>
+        <link rel="stylesheet" href="/css/bootstrap-icons.css" />
     </head>
 
     <body>
         <div id="app">
             <navbar-component></navbar-component>
+            <modal-component ref="modal" v-show="isModalOpen" v-on:closemodal="closeModal()"></modal-component>
             <loading-component v-show="isLoading"></loading-component>
-            <div class="container-xxl">
-                <div class="d-flex flex-column h-75 justify-content-center align-items-center">
-                    <h1>Dashboard</h1>
+
+            <div class="container">
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <h1>Demo Page</h1>
                     <p>(Only accessible only when logged in)</p>
                     <p>The bio below is taken from Firestore :)</p>
                     <p>{{bio}}</p>
@@ -41,6 +44,34 @@
                         </div>
                     </form>
                     <p class="text-danger">{{errorMsg}}</p>
+                    <!-- Button Trigger Modal -->
+                    <button type="button" class="btn btn-primary" @click="setModalConfig()"> Launch demo modal </button>
+                    <!-- Examples of Icons -->
+                    <br />
+                    <p>Here are some example Icons!</p>
+                    <div class="text-center icons">
+                        <div class="icon">
+                            <i class="icon-size bi bi-arrow-bar-up"></i>
+                            <p>Arrow Bar Up</p>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-size bi bi-arrow-down-up"></i>
+                            <p>Arrow Down Up</p>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-size bi bi-brightness-high"></i>
+                            <p>Brightness</p>
+                        </div>
+                        <div class="icon">
+                            <i class="icon-size bi bi-github"></i>
+                            <p>Github</p>
+                        </div>
+                    </div>
+                    <br />
+                    <a class="btn btn-outline-secondary" href="https://icons.getbootstrap.com/#icon-font"
+                        >Learn more!</a
+                    >
+                    <br />
                 </div>
             </div>
         </div>
@@ -54,6 +85,7 @@
                     bio: '',
                     updateBio: '',
                     errorMsg: '',
+                    isModalOpen: false,
                 };
             },
             mounted() {
@@ -64,6 +96,29 @@
                 });
             },
             methods: {
+                setModalConfig() {
+                    let modalConfig = {
+                        title: 'Title',
+                        message: 'Button has changed colour check code!',
+                        rightButtonColor: 'btn-danger',
+                        rightButtonMessage: 'Right Button',
+                        leftButtonColor: 'btn-primary',
+                        leftButtonMessage: 'Left Button',
+                    };
+                    this.showModal(modalConfig);
+                },
+                showModal(modalConfig) {
+                    this.$refs.modal.title = modalConfig.title;
+                    this.$refs.modal.message = modalConfig.message;
+                    this.$refs.modal.rightButtonColor = modalConfig.rightButtonColor;
+                    this.$refs.modal.leftButtonColor = modalConfig.leftButtonColor;
+                    this.$refs.modal.rightButtonMessage = modalConfig.rightButtonMessage;
+                    this.$refs.modal.leftButtonMessage = modalConfig.leftButtonMessage;
+                    this.isModalOpen = true;
+                },
+                closeModal() {
+                    this.isModalOpen = false;
+                },
                 getUserBio() {
                     return axios
                         .get('../userApi/GetBio')
@@ -71,7 +126,7 @@
                             this.bio = data.bioData;
                             this.isLogin = true;
                         })
-                        .catch((error) => {
+                        .catch(error => {
                             this.isLogin = false;
                         });
                 },
@@ -82,10 +137,10 @@
                             .post('../userApi/UpdateBio', {
                                 bio: this.updateBio,
                             })
-                            .then((response) => {
+                            .then(response => {
                                 location.reload();
                             })
-                            .catch((error) => {
+                            .catch(error => {
                                 console.log(error);
                                 this.isLoading = false;
                                 this.errorMsg = 'The update went wrong! Please try again later';
@@ -94,6 +149,7 @@
                 },
             },
         });
+        app.component('modal-component', modal);
         app.component('navbar-component', navbar);
         app.component('loading-component', loadingPage);
         app.mount('#app');
