@@ -40,10 +40,10 @@ node app.js
 
 # Project Structure
 
-`Logic` folder contains the logic for backend api
-`src` folder contains the components and the `index.js` for webpack to bundle
-`routes` folder is to route user link to the appropriate resources
-`viewApis` folder is to get api from the backend by using axios
+`logic` folder contains the logic for backend api  
+`src` folder contains the components and the `index.js` for webpack to bundle  
+`routes` folder is to route user link to the appropriate resources  
+`viewApis` folder is to get api from the backend by using axios  
 
 # Things to note
 
@@ -62,14 +62,15 @@ To use component on a page ensure that the component is registered on the HTML p
 app.component('navbar-component', navbar);
 ```
 
-Vue has already been installed and bundle in the `bundle.js`
+Vue has already been installed and bundled in the `bundle.js`
 Every HTML page should have the following in the head
 
 ```sh
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="/stylesheets/style.css" />
-<link rel="stylesheet" href="/stylesheets/bootstrap.min.css" />
-<script src="/javascripts/bundle.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <script src="/dist/bundle.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap-icons.css" />
 ```
 
 The following script should be at the bottom
