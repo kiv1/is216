@@ -12,12 +12,108 @@
         <div id="app">
             <navbar-component></navbar-component>
             <loading-component v-show="isLoading"></loading-component>
-            <div class="container-xxl">
-                <div class="d-flex flex-column h-75 justify-content-center align-items-center">
-                    <h1>Home</h1>
-                    <p>This is the home page</p>
+            <!-- ======= Hero Section ======= -->
+            <section class="hero d-flex align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div
+                            class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1"
+                            data-aos="fade-up"
+                            data-aos-delay="200"
+                        >
+                            <h1>Solutions For Your Business</h1>
+                            <h2>This is a template found for boostrap</h2>
+                            <div class="d-flex justify-content-center justify-content-lg-start">
+                                <a href="/user/" class="btn-get-started">Get Started</a>
+                                <!-- <a href="https://www.youtube.com/watch?v=jDDaplaOz7Q" class="glightbox btn-watch-video"
+                                    ><i class="bi bi-play-circle"></i><span>Watch Video</span></a
+                                > -->
+                            </div>
+                        </div>
+                        <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+                            <img src="/img/storage.png" class="img-fluid animated" alt="" @load="onImgLoad(0)" />
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- Section 1 -->
+            <section class="section-one">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-xl-5">
+                            <div class="image-container">
+                                <img class="img-fluid" src="img/1.png" alt="alternative" @load="onImgLoad(1)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-7">
+                            <div class="text-container">
+                                <h2>Have access to everything at your fingertips</h2>
+                                <ul class="list-unstyled li-space-lg">
+                                    <li class="d-flex">
+                                        <i class="bi bi-square-fill align-middle"></i>
+                                        <div class="flex-grow-1"
+                                            >Lorem Ipsum is simply dummy text of the printing and typesetting
+                                            industry</div
+                                        >
+                                    </li>
+                                    <li class="d-flex">
+                                        <i class="bi bi-square-fill"></i>
+                                        <div class="flex-grow-1"
+                                            >Lorem Ipsum is simply dummy text of the printing and typesetting
+                                            industry</div
+                                        >
+                                    </li>
+                                    <li class="d-flex">
+                                        <i class="bi bi-square-fill"></i>
+                                        <div class="flex-grow-1"
+                                            >Lorem Ipsum is simply dummy text of the printing and typesetting
+                                            industry</div
+                                        >
+                                    </li>
+                                    <li class="d-flex">
+                                        <i class="bi bi-square-fill"></i>
+                                        <div class="flex-grow-1"
+                                            >Lorem Ipsum is simply dummy text of the printing and typesetting
+                                            industry</div
+                                        >
+                                    </li>
+                                </ul>
+                                <div class="d-flex justify-content-center justify-content-lg-start">
+                                    <a class="btn-get-started" href="/user/">Start Linking</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======= Support Section ======= -->
+            <section class="support section-bg">
+                <div class="container ">
+                    <div class="section-title">
+                        <h2>We Support</h2>
+                    </div>
+                    <div class="row align-items-center justify-content-center" data-aos="zoom-in">
+                        <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+                            <img src="/img/support_1.png" class="img-fluid" alt="" @load="onImgLoad(2)" />
+                        </div>
+
+                        <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+                            <img src="/img/support_2.png" class="img-fluid" alt="" @load="onImgLoad(3)" />
+                        </div>
+
+                        <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+                            <img src="/img/support_3.png" class="img-fluid" alt="" @load="onImgLoad(4)" />
+                        </div>
+
+                        <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+                            <img src="/img/support_4.png" class="img-fluid" alt="" @load="onImgLoad(5)" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <footer-component></footer-component>
         </div>
     </body>
     <script>
@@ -26,13 +122,25 @@
             data() {
                 return {
                     isLoading: false,
+                    isFileLoading: [true, true, true, true, true, true],
                 };
             },
-            mounted() {},
-            methods: {},
+            mounted() {
+                this.isLoading = true;
+            },
+            methods: {
+                onImgLoad(index) {
+                    this.isFileLoading[index] = false;
+                    let checker = arr => arr.every(v => v === true);
+                    if (!checker(this.isFileLoading)) {
+                        this.isLoading = false;
+                    }
+                },
+            },
         });
         app.component('navbar-component', navbar);
         app.component('loading-component', loadingPage);
+        app.component('footer-component', footer);
         app.mount('#app');
     </script>
 </html>
