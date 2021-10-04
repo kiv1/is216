@@ -3,13 +3,31 @@ const readline = require('readline');
 const { google } = require('googleapis');
 const { GoogleAuth } = require('google-auth-library');
 const { file } = require('googleapis/build/src/apis/file');
+var https = require('https');
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive';
 
 let keyFile = process.env.GOOGLE_JSON_PATH;
+const path = `${__dirname}/file.json`;
+
+try {
+    if (!fs.existsSync(path)) {
+        https.get(keyFile, (res) => {
+            // Image will be stored at this path
+            const filePath = fs.createWriteStream(path);
+            res.pipe(filePath);
+            filePath.on('finish', () => {
+                filePath.close();
+                console.log('Download Completed');
+            });
+        });
+    }
+} catch (err) {
+    console.error(err);
+}
 
 const auth = new GoogleAuth({
-    keyFile: keyFile,
+    keyFile: path,
     // Scopes can be specified either as an array or as a single, space-delimited string.
     scopes: SCOPES,
 });
