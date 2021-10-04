@@ -13,65 +13,68 @@
             <navbar-component></navbar-component>
             <modal-component ref="modal" v-show="isModalOpen" v-on:closemodal="closeModal()"></modal-component>
             <loading-component v-show="isLoading"></loading-component>
-
-            <div class="container">
-                <div class="d-flex flex-column justify-content-center align-items-center">
-                    <h1>Demo Page</h1>
-                    <p>(Only accessible only when logged in)</p>
-                    <p>The bio below is taken from Firestore :)</p>
-                    <p>{{bio}}</p>
-                    <form v-on:keyup.enter="updateUserBio()">
-                        <div class="form-group">
-                            <input
-                                type="text"
-                                v-model="updateBio"
-                                class="form-control"
-                                placeholder="New Bio"
-                                required
-                            />
+            <div class="content">
+                <div class="container">
+                    <div class="d-flex flex-column justify-content-center align-items-center">
+                        <h1>Demo Page</h1>
+                        <p>(Only accessible only when logged in)</p>
+                        <p>The bio below is taken from Firestore :)</p>
+                        <p>{{bio}}</p>
+                        <form v-on:keyup.enter="updateUserBio()">
+                            <div class="form-group">
+                                <input
+                                    type="text"
+                                    v-model="updateBio"
+                                    class="form-control"
+                                    placeholder="New Bio"
+                                    required
+                                />
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <button type="reset" class="btn btn-outline-danger">Clear</button>
+                                <button
+                                    :disabled="!updateBio"
+                                    @click="updateUserBio()"
+                                    class="btn btn-outline-primary float-end"
+                                    type="button"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                        <p class="text-danger">{{errorMsg}}</p>
+                        <!-- Button Trigger Modal -->
+                        <button type="button" class="btn btn-primary" @click="setModalConfig()">
+                            Launch demo modal
+                        </button>
+                        <!-- Examples of Icons -->
+                        <br />
+                        <p>Here are some example Icons!</p>
+                        <div class="text-center icons">
+                            <div class="icon">
+                                <i class="icon-size bi bi-arrow-bar-up"></i>
+                                <p>Arrow Bar Up</p>
+                            </div>
+                            <div class="icon">
+                                <i class="icon-size bi bi-arrow-down-up"></i>
+                                <p>Arrow Down Up</p>
+                            </div>
+                            <div class="icon">
+                                <i class="icon-size bi bi-brightness-high"></i>
+                                <p>Brightness</p>
+                            </div>
+                            <div class="icon">
+                                <i class="icon-size bi bi-github"></i>
+                                <p>Github</p>
+                            </div>
                         </div>
                         <br />
-                        <div class="form-group">
-                            <button type="reset" class="btn btn-outline-danger">Clear</button>
-                            <button
-                                :disabled="!updateBio"
-                                @click="updateUserBio()"
-                                class="btn btn-outline-primary float-end"
-                                type="button"
-                            >
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                    <p class="text-danger">{{errorMsg}}</p>
-                    <!-- Button Trigger Modal -->
-                    <button type="button" class="btn btn-primary" @click="setModalConfig()"> Launch demo modal </button>
-                    <!-- Examples of Icons -->
-                    <br />
-                    <p>Here are some example Icons!</p>
-                    <div class="text-center icons">
-                        <div class="icon">
-                            <i class="icon-size bi bi-arrow-bar-up"></i>
-                            <p>Arrow Bar Up</p>
-                        </div>
-                        <div class="icon">
-                            <i class="icon-size bi bi-arrow-down-up"></i>
-                            <p>Arrow Down Up</p>
-                        </div>
-                        <div class="icon">
-                            <i class="icon-size bi bi-brightness-high"></i>
-                            <p>Brightness</p>
-                        </div>
-                        <div class="icon">
-                            <i class="icon-size bi bi-github"></i>
-                            <p>Github</p>
-                        </div>
+                        <a class="btn btn-outline-secondary" href="https://icons.getbootstrap.com/#icon-font"
+                            >Learn more!</a
+                        >
+                        <br />
                     </div>
-                    <br />
-                    <a class="btn btn-outline-secondary" href="https://icons.getbootstrap.com/#icon-font"
-                        >Learn more!</a
-                    >
-                    <br />
                 </div>
             </div>
             <footer-component></footer-component>
@@ -127,7 +130,7 @@
                             this.bio = data.bioData;
                             this.isLogin = true;
                         })
-                        .catch(error => {
+                        .catch((error) => {
                             this.isLogin = false;
                         });
                 },
@@ -138,10 +141,10 @@
                             .post('../userApi/UpdateBio', {
                                 bio: this.updateBio,
                             })
-                            .then(response => {
+                            .then((response) => {
                                 location.reload();
                             })
-                            .catch(error => {
+                            .catch((error) => {
                                 console.log(error);
                                 this.isLoading = false;
                                 this.errorMsg = 'The update went wrong! Please try again later';

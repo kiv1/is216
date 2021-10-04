@@ -22,12 +22,26 @@
         <div id="app">
             <navbar-component></navbar-component>
             <loading-component v-show="isLoading"></loading-component>
-            <div class="container-xxl">
-                <div class="d-flex flex-column h-75 justify-content-center align-items-center">
-                    <h1 class="text-center">Login</h1>
-                    <div id="firebaseui-auth-container"></div>
-                    <p class="text-danger">{{errorMessage}}</p>
-                </div>
+            <div class="content">
+                <section class="section">
+                    <div class="container">
+                        <div class="row h-100 justify-content-center align-items-center">
+                            <div class="col-lg-6 col-xl-5 d-none d-sm-none d-md-block hideOnTablet">
+                                <div class="image-container text-center">
+                                    <img class="img-fluid login-page-img" src="img/login.png" alt="alternative" />
+                                    <h2 class="text-center">Your gateway to your Storage</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-xl-7">
+                                <div class="text-container text-center">
+                                    <h2 class="text-center">Sign in</h2>
+                                    <div id="firebaseui-auth-container"></div>
+                                    <p class="text-danger">{{errorMessage}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
             <footer-component></footer-component>
         </div>
@@ -51,20 +65,21 @@
                         signInOptions: [
                             // Google sign in option
                             firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                            firebase.auth.GithubAuthProvider.PROVIDER_ID,
                         ],
                         signInFlow: 'popup',
                         callbacks: {
-                            signInFailure: function (error) {
+                            signInFailure: (error) => {
                                 this.setErrorMessage('There was a problem with your login. Please try again later');
                                 return Promise.resolve();
                             },
-                            signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+                            signInSuccessWithAuthResult: (authResult, redirectUrl) => {
                                 // User successfully signed in.
                                 this.isLoading = true;
                                 this.errorMessage = '';
                                 authResult.user
                                     .getIdToken()
-                                    .then(function (idToken) {
+                                    .then((idToken) => {
                                         window.location.href = '/user/savecookie?idToken=' + idToken;
                                     })
                                     .catch((error) => {

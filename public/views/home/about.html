@@ -12,11 +12,15 @@
         <div id="app">
             <navbar-component></navbar-component>
             <loading-component v-show="isLoading"></loading-component>
-            <div class="container-xxl">
-                <div class="d-flex flex-column h-75 justify-content-center align-items-center">
-                    <h1>About</h1>
-                    <p>This is the About page</p>
-                </div>
+            <div class="content">
+                <section class="section">
+                    <div class="container">
+                        <div class="d-flex flex-column h-75 justify-content-center align-items-center">
+                            <h1>About</h1>
+                            <p>This is the About page</p>
+                        </div>
+                    </div>
+                </section>
             </div>
             <footer-component></footer-component>
         </div>

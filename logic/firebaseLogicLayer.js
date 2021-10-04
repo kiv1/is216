@@ -34,33 +34,41 @@ function getGoogleData() {
     };
 }
 
-async function addUserSetting(userId) {
+async function addDriveUserSetting(userId, driveObj, driveName) {
     let usersCollection = await database.collection(userId);
     let result = await checkDocExists(userId, 'Settings');
+    let userSetting = usersCollection.doc('Settings');
     if (!result) {
-        let userSetting = usersCollection.doc('Settings');
-        return await userSetting.set({
-            bio: 'Hi there! Nice to meet you!',
-        });
+        await userSetting.set({ driveCollection: [driveName] });
+        return await userSetting.update(driveObj);
     } else {
-        return Promise.resolve();
+        let collection = await getUserAvailable(userId);
+        if (!collection.includes(driveName)) {
+            collection.push(driveName);
+        }
+        await userSetting.update({ driveCollection: collection });
+        return await userSetting.update(driveObj);
     }
 }
 
-async function getBio(userId) {
-    let doc = await database
-        .collection(userId)
-        .doc('Settings')
-        .get();
-    let bio = doc.get('bio');
-    return bio;
+async function getDriveProperties(userId, drive) {
+    let doc = await database.collection(userId).doc('Settings').get();
+    let driveProperties = doc.get(drive);
+    return driveProperties;
 }
 
-async function updateBio(userId, newBio) {
-    return await database
-        .collection(userId)
-        .doc('Settings')
-        .update({ bio: newBio });
+async function getUserAvailableDrives(userId) {
+    let doc = await database.collection(userId).doc('Settings').get();
+    let driveCollection = doc.get('driveCollection');
+    let driveSetting = [];
+    driveCollection.forEach((element) => {
+        driveSetting.push(doc.get(element));
+    });
+    let driveSettingCollection = {
+        driveCollection: driveCollection,
+        driveSetting: driveSetting,
+    };
+    return driveSettingCollection;
 }
 
 async function checkDocExists(userId, documentName) {
@@ -79,4 +87,13 @@ async function verifyUser(idToken) {
 async function getUser(sessionToken) {
     return await admin.auth().verifySessionCookie(sessionToken, true);
 }
-module.exports = { getGoogleData, createCookie, verifyUser, getUser, addUserSetting, getBio, updateBio };
+module.exports = {
+    getGoogleData,
+    createCookie,
+    verifyUser,
+    getUser,
+    checkDocExists,
+    getDriveProperties,
+    getUserAvailableDrives,
+    addDriveUserSetting,
+};

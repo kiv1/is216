@@ -10,9 +10,9 @@
                 aria-controls="navbarSupportedContent"
                 aria-expanded="false"
                 aria-label="Toggle navigation"
-                @click="isOpen=!isOpen"
+                @click="isOpen = !isOpen"
             >
-                <i class="bi " :class="{ 'bi-list': !isOpen, 'bi-x':isOpen }" ></i>
+                <i class="bi" :class="{ 'bi-list': !isOpen, 'bi-x': isOpen }"></i>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -26,12 +26,15 @@
                     <li v-if="isLogin" class="nav-item">
                         <a class="nav-link" href="/user/demo">Demo</a>
                     </li>
+                    <li v-if="isLogin" class="nav-item">
+                        <a class="nav-link" href="/user/dashboard">Dashboard</a>
+                    </li>
                 </ul>
                 <div>
                     <div v-show="isLoading" class="spinner-border text-light" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <div v-show="!isLoading" >
+                    <div v-show="!isLoading">
                         <div v-if="!isLogin" class="d-grid gap-2 text-center">
                             <a class="login" href="/user" role="button">Login</a>
                         </div>
@@ -46,58 +49,70 @@
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false"
                                     >
-                                        <img :src="pictureUrl" class="rounded-circle profile-img mx-2" alt="Profile Picture">
-                                        {{name}}
+                                        <img
+                                            :src="pictureUrl"
+                                            class="rounded-circle profile-img mx-2"
+                                            alt="Profile Picture"
+                                            onerror="this.onerror=null;this.src='/img/user.png';"
+                                        />
+                                        {{ name }}
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <li>
                                             <a class="dropdown-item" href="/user/logout">Logout</a>
-                                        </li>                            
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
         </div>
     </nav>
 </template>
 
 <script>
-    export default {
+export default {
     name: 'navbar-component',
-        data() {
-            return {
-                isLoading:false,
-                isLogin:false,
-                email: '',
-                name:'',
-                pictureUrl:'',
-                isOpen:false,
-            };
-        },
-        mounted() {
-            this.isLoading = true;
-            let getData = [this.getUserData()];
-            Promise.all(getData).then(() => {
-                this.isLoading = false;
-            });
-        },
-        methods: {
-            getUserData() {
-                return axios
-                    .get('../userApi/GetUserData')
-                    .then(({ data }) => {
-                        this.email = data.email;
+    data() {
+        return {
+            isLoading: false,
+            isLogin: false,
+            email: '',
+            name: '',
+            pictureUrl: '/img/user.png',
+            isOpen: false,
+        };
+    },
+    mounted() {
+        this.isLoading = true;
+        let getData = [this.getUserData()];
+        Promise.all(getData).then(() => {
+            this.isLoading = false;
+        });
+    },
+    methods: {
+        getUserData() {
+            return axios
+                .get('../userApi/GetUserData')
+                .then(({ data }) => {
+                    this.email = data.email;
+                    this.name = data.email;
+
+                    if ('name' in data) {
                         this.name = data.name;
+                    }
+
+                    if ('picture' in data) {
                         this.pictureUrl = data.picture;
-                        this.isLogin = true;
-                    })
-                    .catch((error) => {
-                        this.isLogin = false;
-                    });
-            },
-        }
-    }
+                    }
+                    this.isLogin = true;
+                })
+                .catch((error) => {
+                    this.isLogin = false;
+                });
+        },
+    },
+};
 </script>

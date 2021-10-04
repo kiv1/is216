@@ -1,3 +1,9 @@
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
 .profile-img {
     min-width: 20px;
     max-width: 26px;
@@ -9,7 +15,7 @@
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: 1010;
+    z-index: 1060;
     background: rgba(0, 0, 0, 0.6);
 }
 
@@ -47,6 +53,7 @@
     padding-bottom: 0rem !important;
     padding-top: 0rem !important;
     background: #37517e;
+    flex-shrink: 0;
 }
 @media (max-width: 992px) {
     .navbar-expand-lg {
@@ -111,6 +118,9 @@
     line-height: 0;
 }
 
+.nav-link:hover,
+.nav-link:active,
+.nav-link:focus,
 .navbar a:hover,
 .navbar .active,
 .navbar .active:focus,
@@ -137,6 +147,7 @@
     text-transform: none;
     font-weight: 500;
     color: #0c3c53;
+    padding: 10px 0 10px 10px;
 }
 
 .navbar .dropdown ul a i {
@@ -155,13 +166,13 @@
         padding-left: 1.2rem !important;
     }
 }
-
+.content {
+    flex: 1 0 auto;
+}
 /*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
 .hero {
-    width: 100%;
-    height: 80vh;
     background: #37517e;
 }
 
@@ -356,39 +367,39 @@
 }
 
 /*********************/
-/*     Section 1    */
+/*     Section    */
 /*********************/
-.section-one {
+.section {
     position: relative;
 }
 
-.section-one .container {
+.section .container {
     padding-top: 4.5rem;
 }
 
-.section-one div[class*='col'] {
+.section div[class*='col'] {
     position: relative;
 }
 
-.section-one .image-container {
+.section .image-container {
     margin-bottom: 5rem;
 }
 
-.section-one h2 {
+.section h2 {
     margin-bottom: 1.875rem;
 }
 
-.section-one .list-unstyled {
+.section .list-unstyled {
     margin-bottom: 2rem;
 }
 
-.section-one .list-unstyled .bi {
+.section .list-unstyled .bi {
     color: #cc2973;
     font-size: 0.4rem;
     margin-top: 0.8rem;
 }
 
-.section-one .list-unstyled .flex-grow-1 {
+.section .list-unstyled .flex-grow-1 {
     margin-left: 0.5rem;
     margin-bottom: 1rem;
     font-size: 1.3rem;
@@ -399,9 +410,10 @@
 --------------------------------------------------------------*/
 #footer {
     font-size: 14px;
+    height: 100px;
     background: #37517e;
+    flex-shrink: 0;
 }
-
 .social-links a {
     font-size: 18px;
     display: inline-block;
@@ -444,7 +456,7 @@
 @media (max-width: 768px) {
     #footer .footer-bottom {
         padding-top: 20px;
-        padding-bottom: 20px;
+        padding-bottom: 5px;
     }
     #footer .copyright,
     #footer .credits {
@@ -455,4 +467,49 @@
     #footer .credits {
         padding-top: 4px;
     }
+}
+
+/* .login-page {
+    padding-top: 4rem;
+} */
+
+.login-page-img {
+    width: 55%;
+}
+
+.section .card img {
+    max-width: 60%;
+    transition: all 0.4s ease-in-out;
+    display: inline-block;
+    padding: 15px 0;
+}
+
+/* ----------- iPad Pro ----------- */
+/* Portrait and Landscape */
+@media only screen and (min-width: 1024px) and (max-height: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) {
+}
+
+/* Portrait */
+@media only screen and (min-width: 1024px) and (max-height: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1.5) {
+    div .row .hideOnTablet {
+        display: none !important;
+    }
+}
+
+/* Landscape */
+@media only screen and (min-width: 1024px) and (max-height: 1366px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1.5) {
+}
+
+@media only screen and (device-width: 768px) {
+    /* For general iPad layouts */
+}
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: portrait) {
+    div .row .hideOnTablet {
+        display: none !important;
+    }
+}
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: landscape) {
+    /* For landscape layouts only */
 }

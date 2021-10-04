@@ -1,0 +1,181 @@
+<html>
+    <head>
+        <title>Express</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/css/toast.css" />
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <script src="/dist/bundle.js"></script>
+        <link rel="stylesheet" href="/css/bootstrap-icons.css" />
+        <link rel="stylesheet" href="/css/drop-zone.common.css" />
+    </head>
+
+    <body>
+        <div id="app">
+            <navbar-component></navbar-component>
+            <create-new-folder-modal
+                ref="createNewFolderModal"
+                v-show="createNewFolder"
+                v-on:closemodal="closeModal()"
+                v-on:isloading="activateLoading"
+            ></create-new-folder-modal>
+            <loading-component v-show="isLoading"></loading-component>
+
+            <div class="content">
+                <section class="section">
+                    <div class="container">
+                        <div class="row mt-4 text-center">
+                            <div class="col" v-if="!multipleItemDelete && !createNewFolder">
+                                <button type="button" @click="createNewFolder=true" class="btn btn-outline-primary"
+                                    >Create New Folder</button
+                                >
+                            </div>
+                            <div class="col" v-if="!multipleItemDelete && !createNewFolder">
+                                <button type="button" @click="multipleItemDelete=true" class="btn btn-outline-danger"
+                                    >Delete Mutiple Item</button
+                                >
+                            </div>
+                            <div class="col" v-if="multipleItemDelete">
+                                <button type="button" @click="multipleItemDelete=false" class="btn btn-outline-primary"
+                                    >Cancel</button
+                                >
+                            </div>
+                            <div class="col" v-if="multipleItemDelete">
+                                <button
+                                    type="button"
+                                    :disabled="mulitpleItemToDelete.length == 0"
+                                    @@click="deleteWarning=true"
+                                    class="btn btn-outline-danger"
+                                    >Delete</button
+                                >
+                            </div>
+                        </div>
+                        <br />
+                        <fileupload
+                            ref="fileUpload"
+                            :driveid="folderId"
+                            :drive="selectedDrive"
+                            @refreshpage="refreshPage"
+                            @refreshfile="getNewData"
+                        ></fileupload>
+                        <div
+                            v-if="files.length==0"
+                            class="d-flex flex-column justify-content-center align-items-center mb-5"
+                        >
+                            <section class="section-bg">
+                                <div class="container text-center">
+                                    <div class="row align-items-center justify-content-center" data-aos="zoom-in">
+                                        <div class="col"></div>
+                                        <div class="col-6 align-items-center justify-content-center">
+                                            <img src="/img/empty.png" class="img-fluid" alt="" />
+                                            <h3>Looks like you got no item inside your folder</h3>
+                                        </div>
+                                        <div class="col"></div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div v-else class="row align-items-center justify-content-center" data-aos="zoom-in">
+                            <div
+                                v-for="item in files"
+                                class="card m-4 col-lg-2 col-md-2 col-4 align-items-center justify-content-center"
+                            >
+                                <img
+                                    v-if="item.mimeType.includes('folder')"
+                                    src="/img/folder.png"
+                                    class="img-fluid file-image"
+                                    alt=""
+                                />
+                                <img
+                                    v-else-if="item.mimeType.includes('google') ||  item.mimeType.includes('document')"
+                                    src="/img/doc.png"
+                                    class="img-fluid file-image"
+                                    alt=""
+                                />
+                                <img
+                                    v-else
+                                    referrerpolicy="no-referrer"
+                                    :src="item.thumbnailLink"
+                                    class="img-fluid file-image"
+                                    alt=""
+                                />
+                                <p class="text-break text-center">{{item.name}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <footer-component></footer-component>
+        </div>
+    </body>
+    <script>
+        const app = Vue.createApp({
+            el: '#app',
+            data() {
+                return {
+                    folderId: '',
+                    isLoading: false,
+                    availableDrive: [],
+                    files: [],
+                    selectedDrive: '',
+                    multipleItemDelete: false,
+                    createNewFolder: false,
+                    mulitpleItemToDelete: [],
+                    createNewFolder: false,
+                    url: '',
+                };
+            },
+            async mounted() {
+                this.isLoading = true;
+                await this.getAvailableDrive();
+                this.$refs.createNewFolderModal.folderId = this.folderId;
+                this.selectedDrive = this.availableDrive[0];
+                this.$refs.createNewFolderModal.drive = this.selectedDrive;
+                await this.getAllFilesFromDrive(this.selectedDrive, this.folderId);
+                app.component('fileupload', fileUpload);
+                this.$forceUpdate();
+                this.isLoading = false;
+            },
+            methods: {
+                getAvailableDrive() {
+                    return axios
+                        .get('../userApi/GetDriveAvailable')
+                        .then(({ data }) => {
+                            this.availableDrive = data.driveCollection;
+                            this.driveSettings = data.driveSetting;
+                            this.folderId = data.driveSetting[0];
+                        })
+                        .catch((error) => {});
+                },
+                closeModal() {
+                    this.createNewFolder = false;
+                },
+                async getNewData() {
+                    this.isLoading = true;
+                    await this.getAllFilesFromDrive(this.selectedDrive, this.folderId);
+                    this.isLoading = false;
+                },
+                refreshPage() {
+                    location.reload();
+                },
+                getAllFilesFromDrive(drive, folderId) {
+                    return axios
+                        .get('../userApi/GetAllFilesFromDrive?drive=' + drive + '&driveId=' + folderId)
+                        .then(({ data }) => {
+                            console.log(data);
+                            this.files = data;
+                        })
+                        .catch((error) => {});
+                },
+                activateLoading() {
+                    this.isLoading = !this.isLoading;
+                },
+            },
+        });
+        app.component('create-new-folder-modal', createNewFolderModal);
+        app.component('navbar-component', navbar);
+        app.component('loading-component', loadingPage);
+        app.component('footer-component', footer);
+        app.mount('#app');
+    </script>
+</html>
