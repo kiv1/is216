@@ -11,6 +11,7 @@ const MESSAGING_SENDER_ID = process.env.MESSAGING_SENDER_ID;
 const APP_ID = process.env.APP_ID;
 const CLIENT_EMAIL = process.env.CLIENT_EMAIL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const DATABASE_URL = process.env.DATABASE_URL;
 
 var key = PRIVATE_KEY;
 
@@ -20,8 +21,9 @@ admin.initializeApp({
         client_email: CLIENT_EMAIL,
         project_id: PROJECT_ID,
     }),
+    databaseURL: DATABASE_URL,
 });
-const database = admin.firestore();
+const database = admin.database();
 
 function getGoogleData() {
     return {
@@ -34,49 +36,6 @@ function getGoogleData() {
     };
 }
 
-async function addDriveUserSetting(userId, driveObj, driveName) {
-    let usersCollection = await database.collection(userId);
-    let result = await checkDocExists(userId, 'Settings');
-    let userSetting = usersCollection.doc('Settings');
-    if (!result) {
-        await userSetting.set({ driveCollection: [driveName] });
-        return await userSetting.update(driveObj);
-    } else {
-        let collection = await getUserAvailable(userId);
-        if (!collection.includes(driveName)) {
-            collection.push(driveName);
-        }
-        await userSetting.update({ driveCollection: collection });
-        return await userSetting.update(driveObj);
-    }
-}
-
-async function getDriveProperties(userId, drive) {
-    let doc = await database.collection(userId).doc('Settings').get();
-    let driveProperties = doc.get(drive);
-    return driveProperties;
-}
-
-async function getUserAvailableDrives(userId) {
-    let doc = await database.collection(userId).doc('Settings').get();
-    let driveCollection = doc.get('driveCollection');
-    let driveSetting = [];
-    driveCollection.forEach((element) => {
-        driveSetting.push(doc.get(element));
-    });
-    let driveSettingCollection = {
-        driveCollection: driveCollection,
-        driveSetting: driveSetting,
-    };
-    return driveSettingCollection;
-}
-
-async function checkDocExists(userId, documentName) {
-    let usersCollection = database.collection(userId);
-    let doc = await usersCollection.doc(documentName).get();
-    return doc.exists;
-}
-
 async function createCookie(idToken) {
     const expiresIn = 60 * 60 * 24 * 5 * 1000;
     return await admin.auth().createSessionCookie(idToken, { expiresIn });
@@ -87,13 +46,27 @@ async function verifyUser(idToken) {
 async function getUser(sessionToken) {
     return await admin.auth().verifySessionCookie(sessionToken, true);
 }
+
+async function insertOtp(user, otp) {
+    var ref = database.ref(user);
+    return await ref.set({ otp: otp, dateTime: new Date().toISOString() });
+}
+
+async function setOtpVerified(user) {
+    var ref = database.ref(user);
+    return await ref.update({ verified: true });
+}
+
+async function getOtp(user) {
+    var ref = database.ref(user);
+    return await ref.once('value');
+}
 module.exports = {
     getGoogleData,
     createCookie,
     verifyUser,
     getUser,
-    checkDocExists,
-    getDriveProperties,
-    getUserAvailableDrives,
-    addDriveUserSetting,
+    insertOtp,
+    getOtp,
+    setOtpVerified,
 };

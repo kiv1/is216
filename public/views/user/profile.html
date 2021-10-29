@@ -13,60 +13,38 @@
         <div id="app">
             <loading-component v-show="isLoading"></loading-component>
             <navbar-component></navbar-component>
+            <telegram-modal-component
+                ref="modal"
+                v-show="isModalOpen"
+                v-on:closemodal="closeModal()"
+                v-on:refresh="getUserProfile()"
+            ></telegram-modal-component>
             <div class="content">
                 <section class="section">
-                    <div class="container">
-                        <div class="mt-3 d-flex flex-column justify-content-center align-items-center">
-                            <h3>Setup your profile</h3>
+                    <div class="h-100 container">
+                        <div class="h-100 mt-3 d-flex flex-column justify-content-center align-items-center">
+                            <h3>My Profile</h3>
                             <br />
-                            <form class="form">
+                            <form class="form w-100">
                                 <div class="row">
                                     <div class="input-group mb-3">
-                                        <label class="input-group-text">Telegram Handle</label>
+                                        <label class="input-group-text">Telegram Handle:</label>
                                         <input
                                             type="text"
                                             class="form-control"
                                             placeholder="Telegram Handle"
                                             v-model="userTelegram"
                                             required
-                                            :disabled="hasUserClickVerify"
+                                            :disabled="true"
                                         />
-                                        <button
-                                            type="button"
-                                            :disabled="isTelegramVerifyButtonDisabled||hasUserClickVerify"
-                                            @click="verifyUsername"
-                                            class="btn btn-primary float-end"
-                                            >Verify</button
+                                        <button type="button" @click="showModal()" class="btn btn-primary float-end"
+                                            >Change</button
                                         >
                                     </div>
-                                    <div v-if="hasUserClickVerify" class="input-group mb-3">
-                                        <label class="input-group-text">OTP</label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            placeholder="OTP"
-                                            v-model="userOTP"
-                                            required
-                                            :disabled="usernameVerified"
-                                        />
-                                        <button
-                                            type="button"
-                                            :disabled="usernameVerified"
-                                            @click="verifyUsername"
-                                            class="btn btn-primary float-end"
-                                            >Resend</button
-                                        >
-                                        <button type="button" @click="resetTelegram" class="btn btn-danger float-end"
-                                            >Cancel</button
-                                        >
-                                        <button
-                                            type="button"
-                                            :disabled="!userOTP || usernameVerified"
-                                            @click="verifyOTP"
-                                            class="btn btn-success float-end"
-                                            >Confirm</button
-                                        >
-                                    </div>
+                                </div>
+                            </form>
+                            <form class="form">
+                                <div class="row">
                                     <div class="input-group mb-3">
                                         <label class="input-group-text">Schoool</label>
                                         <select v-model="userSchool" class="form-select" required>
@@ -107,7 +85,7 @@
                                     @click="submitProfile"
                                     :disabled="!isFormComplete"
                                     class="btn btn-primary float-end"
-                                    >Submit</button
+                                    >Update</button
                                 >
                             </form>
                         </div>
@@ -130,70 +108,22 @@
                     userCourse: null,
                     userMods: [],
                     searchMods: '',
-                    //Telegram related fields
                     userTelegram: '',
-                    usernameVerified: false,
-                    userOTP: '',
-                    hasUserClickVerify: false,
+                    isModalOpen: false,
                 };
             },
             mounted() {
                 let getData = [this.getAllUserSetting()];
                 Promise.all(getData).then(() => {
-                    this.isLoading = false;
+                    this.getUserProfile();
                 });
             },
             methods: {
-                verifyUsername() {
-                    this.isLoading = true;
-
-                    return axios
-                        .post('../services/CheckTelegramHandle', {
-                            handle: this.userTelegram,
-                        })
-                        .then(({ data }) => {
-                            this.isLoading = false;
-                            this.hasUserClickVerify = true;
-                            toast('OTP has been sent to the Telegram handle', {
-                                position: 'top-right',
-                                type: 'info',
-                                showIcon: 'true',
-                            });
-                        })
-                        .catch((error) => {
-                            this.isLoading = false;
-                            toast(error.response.data.msg, {
-                                position: 'top-right',
-                                type: 'danger',
-                                showIcon: 'true',
-                            });
-                        });
+                closeModal() {
+                    this.isModalOpen = false;
                 },
-                verifyOTP() {
-                    this.isLoading = true;
-
-                    return axios
-                        .post('../services/VerifyOTP', {
-                            handle: this.userTelegram,
-                            otp: this.userOTP,
-                        })
-                        .then(({ data }) => {
-                            this.isLoading = false;
-                            this.usernameVerified = true;
-                            toast('Telegram has been verified', {
-                                position: 'top-right',
-                                type: 'info',
-                                showIcon: 'true',
-                            });
-                        })
-                        .catch((error) => {
-                            this.isLoading = false;
-                            toast(error.response.data.msg, {
-                                position: 'top-right',
-                                type: 'danger',
-                                showIcon: 'true',
-                            });
-                        });
+                showModal() {
+                    this.isModalOpen = true;
                 },
                 getAllUserSetting() {
                     return axios
@@ -207,17 +137,27 @@
                             this.isLoading = false;
                         });
                 },
-                resetTelegram() {
-                    this.userTelegram = '';
-                    this.usernameVerified = false;
-                    this.userOTP = '';
-                    this.hasUserClickVerify = false;
+                getUserProfile() {
+                    this.isModalOpen = false;
+                    this.isLoading = true;
+                    return axios
+                        .get('../services/GetUserProfile')
+                        .then(({ data }) => {
+                            this.userTelegram = data.user.telegram;
+                            this.userSchool = data.user.school;
+                            this.userCourse = data.user.course;
+                            this.userMods = data.mods;
+                            this.isLoading = false;
+                        })
+                        .catch((error) => {
+                            this.isLoading = false;
+                        });
                 },
+
                 chooseMod(oneMod) {
                     this.userMods.push(oneMod);
                     this.searchMods = '';
                 },
-
                 removeMod(oneMod) {
                     this.userMods = this.userMods.filter(function (value, index, arr) {
                         return value != oneMod;
@@ -226,15 +166,21 @@
                 submitProfile() {
                     this.isLoading = true;
                     return axios
-                        .post('../services/SetProfile', {
-                            handle: this.userTelegram,
+                        .post('../services/UpdateProfile', {
                             school: this.userSchool,
                             course: this.userCourse,
                             mods: this.userMods,
                         })
                         .then(({ data }) => {
-                            console.log(data);
-                            window.location.href = '/user/dashboard';
+                            let getData = [this.getUserProfile()];
+                            Promise.all(getData).then(() => {
+                                this.isLoading = false;
+                                toast('Updated Successfully', {
+                                    position: 'top-right',
+                                    type: 'info',
+                                    showIcon: 'true',
+                                });
+                            });
                         })
                         .catch((error) => {
                             this.isLoading = false;
@@ -248,31 +194,25 @@
                 },
             },
             computed: {
-                isTelegramVerifyButtonDisabled() {
-                    if (!this.userTelegram) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                },
                 courseOption() {
                     let temp = [];
-                    this.userCourse = null;
                     this.allCourseOptions.forEach((oneCourse) => {
                         if (oneCourse.schoolId == this.userSchool) {
                             temp.push(oneCourse);
                         }
                     });
+                    if (temp.filter((e) => e.id == this.userCourse).length === 0) {
+                        this.userCourse = null;
+                    }
                     return temp;
                 },
                 modsOption() {
                     let temp = [];
                     this.allModsOptions.forEach((oneMod) => {
-                        if (!this.userMods.includes(oneMod)) {
+                        if (this.userMods.filter((e) => e.id == oneMod.id).length == 0) {
                             temp.push(oneMod);
                         }
                     });
-
                     return temp;
                 },
 
@@ -291,7 +231,7 @@
                     return temp;
                 },
                 isFormComplete() {
-                    if (this.usernameVerified && this.userSchool && this.userCourse && this.userMods.length > 3) {
+                    if (this.userSchool && this.userCourse && this.userMods.length > 3) {
                         return true;
                     } else {
                         return false;
@@ -299,6 +239,7 @@
                 },
             },
         });
+        app.component('telegram-modal-component', telegramModalComponent);
         app.component('navbar-component', navbar);
         app.component('loading-component', loadingPage);
         app.component('footer-component', footer);

@@ -8,7 +8,6 @@
         "bootstrap": "^5.1.1",
         "cookie-parser": "^1.4.5",
         "debug": "~2.6.9",
-        "dropzone-vue": "^0.1.10",
         "express": "^4.16.4",
         "firebase-admin": "^9.11.1",
         "fs": "0.0.1-security",
@@ -19,6 +18,8 @@
         "mosha-vue-toastify": "^1.0.23",
         "multer": "^1.4.3",
         "style-loader": "^3.2.1",
+        "tedious": "^14.0.0",
+        "telegram": "^1.9.6",
         "vue": "^3.2.11",
         "vue-loader": "^16.5.0",
         "vue-upload-component": "^3.0.50"

@@ -18,12 +18,12 @@
                 v-show="isModalOpen"
                 v-on:closemodal="closeModal()"
                 v-on:refresh="getAllUsers()"
-                v-on:isloading="changeLoading()"
+                v-on:isLoading="changeLoading()"
             ></connect-modal-component>
             <div class="content mb-4">
                 <div class="container">
                     <br />
-                    <h3>Available Study Buddy</h3>
+                    <h3>Pending Study Buddy</h3>
                     <div class="w-100 d-flex flex-column justify-content-center align-items-center my-auto">
                         <ul class="list-group w-100">
                             <template v-for="oneUser in userAvailable">
@@ -39,6 +39,7 @@
                                             <br />
                                             <br />
                                             <button
+                                                v-if="oneUser.isPendingUserAction"
                                                 type="button button-sm"
                                                 @click="showModal(oneUser.uid, oneUser.name)"
                                                 class="btn btn-outline-primary"
@@ -49,6 +50,37 @@
                                     </div>
                                 </li>
                             </template>
+                            <li v-if="userAvailable.length==0" class="list-group-item"
+                                >You don't have any request. Go to dashboard to find one!</li
+                            >
+                        </ul>
+                    </div>
+                    <br />
+                    <h3>Accepted Study Buddy</h3>
+                    <div class="w-100 d-flex flex-column justify-content-center align-items-center my-auto">
+                        <ul class="list-group w-100">
+                            <template v-for="oneUser in acceptedUser">
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col"
+                                            >{{oneUser.name}} <br />
+                                            {{oneUser.school}} <br />
+                                            {{oneUser.course}}</div
+                                        >
+                                        <div class="text-end col-4"
+                                            >{{oneUser.similarity}}%
+                                            <br />
+                                            <br />
+                                            <a :href="'https://t.me/'+oneUser.telegram" target="_blank"
+                                                >@{{oneUser.telegram}}</a
+                                            >
+                                        </div>
+                                    </div>
+                                </li>
+                            </template>
+                            <li v-if="acceptedUser.length==0" class="list-group-item"
+                                >You don't have any buddy. Go to dashboard to find one!</li
+                            >
                         </ul>
                     </div>
                 </div>
@@ -64,6 +96,7 @@
                     isLoading: false,
                     userAvailable: [],
                     isModalOpen: false,
+                    acceptedUser: [],
                 };
             },
             mounted() {
@@ -90,9 +123,10 @@
                     this.isModalOpen = false;
                     this.isLoading = true;
                     return axios
-                        .get('../services/GetAllUsers')
+                        .get('../services/GetAllPendingRequest')
                         .then(({ data }) => {
                             this.userAvailable = data.users;
+                            this.acceptedUser = data.buddy;
                             this.isLoading = false;
                         })
                         .catch((error) => {

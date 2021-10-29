@@ -2,6 +2,7 @@ const express = require('express');
 var path = require('path');
 var router = express.Router();
 const firebaseLL = require('../logic/firebaseLogicLayer.js');
+const azureLL = require('../logic/azureSqlLogicLayer.js');
 
 router.get('/', checkCookie, (req, res) => {
     res.sendFile(path.join(__dirname, '../public/views/user', 'login.html'), { dotfiles: 'allow' });
@@ -48,10 +49,6 @@ router.get('/demo', checkCookie, (req, res) => {
     res.sendFile(path.join(__dirname, '../public/views/user', 'demo.html'), { dotfiles: 'allow' });
 });
 
-router.get('/dashboard', checkCookie, (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/views/user', 'dashboard.html'), { dotfiles: 'allow' });
-});
-
 // // Saving cookies and verify cookies
 // // Reference :
 // //https://firebase.google.com/docs/auth/admin/manage-cookies
@@ -75,12 +72,25 @@ async function isSetupComplete(userId) {
     return await firebaseLL.checkDocExists(userId, 'Settings');
 }
 
+router.get('/dashboard', checkCookie, (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/views/user', 'dashboard.html'), { dotfiles: 'allow' });
+});
+
+router.get('/profile', checkCookie, (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/views/user', 'profile.html'), { dotfiles: 'allow' });
+});
+
+router.get('/mybuddy', checkCookie, (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/views/user', 'mybuddy.html'), { dotfiles: 'allow' });
+});
+
 function checkCookie(req, res, next) {
     const sessionCookie = req.cookies.session || '';
     firebaseLL
         .getUser(sessionCookie)
         .then(async (decodedClaims) => {
             req.decodedClaims = decodedClaims;
+
             let result = await isSetupComplete(decodedClaims.uid);
             if (!result) {
                 res.sendFile(path.join(__dirname, '../public/views/user', 'setup.html'), { dotfiles: 'allow' });
@@ -94,6 +104,11 @@ function checkCookie(req, res, next) {
             console.log(error);
             res.sendFile(path.join(__dirname, '../public/views/user', 'login.html'), { dotfiles: 'allow' });
         });
+}
+
+async function isSetupComplete(uid) {
+    let result = await azureLL.getUserData(uid);
+    return result.status;
 }
 
 module.exports = router;

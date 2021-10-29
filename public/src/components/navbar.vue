@@ -24,10 +24,10 @@
                         <a class="nav-link" href="/about">About</a>
                     </li>
                     <li v-if="isLogin" class="nav-item">
-                        <a class="nav-link" href="/user/demo">Demo</a>
+                        <a class="nav-link" href="/user/dashboard">Dashboard</a>
                     </li>
                     <li v-if="isLogin" class="nav-item">
-                        <a class="nav-link" href="/user/dashboard">Dashboard</a>
+                        <a class="nav-link" href="/user/mybuddy">My Buddy</a>
                     </li>
                 </ul>
                 <div>
@@ -57,9 +57,12 @@
                                         />
                                         {{ name }}
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
-                                            <a class="dropdown-item" href="/user/logout">Logout</a>
+                                            <a class="nav-link dropdown-item" href="/user/profile">My Profile</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link dropdown-item" href="/user/logout">Logout</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -95,7 +98,7 @@ export default {
     methods: {
         getUserData() {
             return axios
-                .get('../userApi/GetUserData')
+                .get('../services/GetUserData')
                 .then(({ data }) => {
                     this.email = data.email;
                     this.name = data.email;

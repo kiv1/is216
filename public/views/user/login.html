@@ -28,7 +28,7 @@
                         <div class="row h-100 justify-content-center align-items-center">
                             <div class="col-lg-6 col-xl-5 d-none d-sm-none d-md-block hideOnTablet">
                                 <div class="image-container text-center">
-                                    <img class="img-fluid login-page-img" src="img/login.png" alt="alternative" />
+                                    <img class="img-fluid login-page-img" src="/img/login.png" alt="alternative" />
                                     <h2 class="text-center">Your gateway to your Storage</h2>
                                 </div>
                             </div>
@@ -65,7 +65,6 @@
                         signInOptions: [
                             // Google sign in option
                             firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                            firebase.auth.GithubAuthProvider.PROVIDER_ID,
                         ],
                         signInFlow: 'popup',
                         callbacks: {
@@ -106,7 +105,7 @@
                 },
                 getGoogleData() {
                     return axios
-                        .get('../userApi/GetGoogleData')
+                        .get('../services/GetGoogleData')
                         .then(({ data }) => {
                             this.errorMessage = '';
                             this.config.apiKey = data.apiKey;

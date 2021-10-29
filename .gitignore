@@ -119,7 +119,6 @@ out
 
 # public
 uploads
-logic/file.json
 # vuepress build output
 
 .vuepress/dist
