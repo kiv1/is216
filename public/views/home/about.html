@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Express</title>
+        <title>SMU Study Buddy - About</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/css/style.css" />
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
@@ -12,17 +12,20 @@
         <div id="app">
             <navbar-component></navbar-component>
             <loading-component v-show="isLoading"></loading-component>
-            <div class="content">
-                <section class="section">
-                    <div class="container">
-                        <div class="d-flex flex-column h-75 justify-content-center align-items-center">
-                            <h1>About</h1>
-                            <p>This is the About page</p>
+            <perfect-scrollbar>
+                <div class="content">
+                    <section class="section">
+                        <div class="container">
+                            <div class="d-flex flex-column h-100 justify-content-center align-items-center">
+                                <h1>About</h1>
+                                <p>This webpage was created for IS216 Web Application II module in AY2021/2022 by G7T8.</p>
+                                <p>Members of this group are Zaki, Chong Hui, Ronald, and Hui Lin.</p>
+                            </div>
                         </div>
-                    </div>
-                </section>
-            </div>
-            <footer-component></footer-component>
+                    </section>
+                </div>
+                <footer-component></footer-component>
+            </perfect-scrollbar>
         </div>
     </body>
     <script>
@@ -39,6 +42,7 @@
         app.component('navbar-component', navbar);
         app.component('loading-component', loadingPage);
         app.component('footer-component', footer);
+        app.use(perfectScrollbar);
         app.mount('#app');
     </script>
 </html>

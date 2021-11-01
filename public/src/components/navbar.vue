@@ -1,7 +1,7 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-fixed-top">
+    <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container-xxl">
-            <a class="navbar-brand" href="/">LOGO</a>
+            <a class="navbar-brand" href="/"><img :src="logoUrl"></a>
             <button
                 class="navbar-toggler"
                 type="button"
@@ -86,6 +86,7 @@ export default {
             name: '',
             pictureUrl: '/img/user.png',
             isOpen: false,
+            logoUrl: '/img/Asset 3.png'
         };
     },
     mounted() {

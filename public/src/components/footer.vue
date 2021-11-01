@@ -2,7 +2,7 @@
     <footer id="footer">
         <div class="container footer-bottom clearfix">
             <div class="copyright">
-                &copy; Copyright <strong><span>LOREM</span></strong
+                &copy; Copyright <strong><span>G7T8</span></strong
                 >. All Rights Reserved
             </div>
             <div class="credits">

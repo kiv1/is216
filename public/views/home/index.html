@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Express</title>
+        <title>SMU Study Buddy</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/css/style.css" />
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
@@ -12,101 +12,77 @@
         <div id="app">
             <navbar-component></navbar-component>
             <loading-component v-show="isLoading"></loading-component>
-            <div class="content">
-                <!-- ======= Hero Section ======= -->
-                <section class="hero section">
-                    <div class="container">
-                        <div class="row">
-                            <div
-                                class="
-                                    col-lg-6
-                                    d-flex
-                                    flex-column
-                                    justify-content-center
-                                    pt-4 pt-lg-0
-                                    order-2 order-lg-1
-                                "
-                                data-aos="fade-up"
-                                data-aos-delay="200"
-                            >
-                                <h1>Your one stop solution to all your drives</h1>
-                                <h2>Connect all your cloud drives and view them here!</h2>
-                                <div class="d-flex justify-content-center justify-content-lg-start">
-                                    <a href="/user/" class="btn-get-started">Get Started</a>
-                                    <!-- <a href="https://www.youtube.com/watch?v=jDDaplaOz7Q" class="glightbox btn-watch-video"
+            <perfect-scrollbar>
+                <div class="content">
+                    <!-- ======= Hero Section ======= -->
+                    <section class="hero section full-height d-flex slanted">
+                        <div class="container m-auto">
+                            <div class="row">
+                                <div
+                                    class="
+                                        col-lg-6
+                                        d-flex
+                                        flex-column
+                                        justify-content-center
+                                        pt-4 pt-lg-0
+                                        order-2 order-lg-1
+                                    "
+                                    data-aos="fade-up"
+                                    data-aos-delay="200"
+                                >
+                                    <h1>Your start of a new friendship</h1>
+                                    <h2>Connect with a fellow SMU student!</h2>
+                                    <div class="d-flex justify-content-center justify-content-lg-start">
+                                        <a href="/user/" class="btn-get-started">Get Started</a>
+                                        <!-- <a href="https://www.youtube.com/watch?v=jDDaplaOz7Q" class="glightbox btn-watch-video"
                                     ><i class="bi bi-play-circle"></i><span>Watch Video</span></a
                                 > -->
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
-                                <img src="/img/storage.png" class="img-fluid animated" alt="" @load="onImgLoad(0)" />
+                                <div class="col-lg-6 order-1 order-lg-2" data-aos="zoom-in" data-aos-delay="200">
+                                    <img src="/img/11070.png" class="img-fluid animated" alt="" @load="onImgLoad(0)" />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <!-- Section 1 -->
-                <section class="section">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-6 col-xl-5">
-                                <div class="image-container">
-                                    <img class="img-fluid" src="img/1.png" alt="alternative" @load="onImgLoad(1)" />
+                    <!-- Section 1 -->
+                    <section class="section full-height d-flex">
+                        <div class="container m-auto">
+                            <div class="row">
+                                <div class="col-lg-6 col-xl-5">
+                                    <div class="image-container">
+                                        <img class="img-fluid" src="img/1.png" alt="alternative" @load="onImgLoad(1)" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 col-xl-7">
-                                <div class="text-container">
-                                    <h2>Have access to everything at your fingertips</h2>
-                                    <ul class="list-unstyled li-space-lg">
-                                        <li class="d-flex">
-                                            <i class="bi bi-square-fill align-middle"></i>
-                                            <div class="flex-grow-1"
-                                                >Lorem Ipsum is simply dummy text of the printing and typesetting
-                                                industry</div
-                                            >
-                                        </li>
-                                        <li class="d-flex">
-                                            <i class="bi bi-square-fill"></i>
-                                            <div class="flex-grow-1"
-                                                >Lorem Ipsum is simply dummy text of the printing and typesetting
-                                                industry</div
-                                            >
-                                        </li>
-                                        <li class="d-flex">
-                                            <i class="bi bi-square-fill"></i>
-                                            <div class="flex-grow-1"
-                                                >Lorem Ipsum is simply dummy text of the printing and typesetting
-                                                industry</div
-                                            >
-                                        </li>
-                                        <li class="d-flex">
-                                            <i class="bi bi-square-fill"></i>
-                                            <div class="flex-grow-1"
-                                                >Lorem Ipsum is simply dummy text of the printing and typesetting
-                                                industry</div
-                                            >
-                                        </li>
-                                    </ul>
-                                    <div class="d-flex justify-content-center justify-content-lg-start">
-                                        <a class="btn-get-started" href="/user/">Start Linking</a>
+                                <div class="col-lg-6 col-xl-7">
+                                    <div class="text-container">
+                                        <h2>Why SMU Study Buddy?</h2>
+                                        <ul class="list-unstyled li-space-lg">
+                                            <li class="d-flex">
+                                                <i class="bi bi-square-fill align-middle"></i>
+                                                <div class="flex-grow-1">The pandemic has made it difficult to make friends with classmates</div>
+                                            </li>
+                                            <li class="d-flex">
+                                                <i class="bi bi-square-fill align-middle"></i>
+                                                <div class="flex-grow-1">Having a Study Buddy will keep you motivated and accountable with your academics</div>
+                                            </li>
+                                            <li class="d-flex">
+                                                <i class="bi bi-square-fill align-middle"></i>
+                                                <div class="flex-grow-1">A fun and effective way to learn</div>
+                                            </li>
+                                        </ul>
+                                        <div class="d-flex justify-content-center justify-content-lg-start">
+                                            <a class="btn-get-started" href="/user/">Start Linking</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
-
-                <!-- ======= Support Section ======= -->
-                <section class="support section-bg">
-                    <div class="container">
-                        <div class="section-title">
-                            <h2>We Support</h2>
-                        </div>
-                        <div class="row align-items-center justify-content-center" data-aos="zoom-in"> </div>
-                    </div>
-                </section>
-            </div>
-            <footer-component></footer-component>
+                    </section>
+                </div>
+                <footer-component></footer-component>
+            </perfect-scrollbar>
         </div>
     </body>
     <script>
@@ -134,6 +110,7 @@
         app.component('navbar-component', navbar);
         app.component('loading-component', loadingPage);
         app.component('footer-component', footer);
+        app.use(perfectScrollbar);
         app.mount('#app');
     </script>
 </html>

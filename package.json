@@ -22,11 +22,12 @@
         "telegram": "^1.9.6",
         "vue": "^3.2.11",
         "vue-loader": "^16.5.0",
-        "vue-upload-component": "^3.0.50"
+        "vue-upload-component": "^3.0.50",
+        "vue3-perfect-scrollbar": "^1.5.5"
     },
     "devDependencies": {
         "@vue/compiler-sfc": "^3.2.11",
-        "css-loader": "^6.3.0",
+        "css-loader": "^6.5.0",
         "mini-css-extract-plugin": "^2.3.0",
         "webpack": "^5.52.1",
         "webpack-cli": "^4.8.0"

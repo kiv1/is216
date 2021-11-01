@@ -1,0 +1,27 @@
+.full-height {
+    height: 100vh;
+}
+
+.slanted {
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 0%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
+}
+
+.ps {
+    height: 100%;
+}
+
+.ps,
+.ps__rail-y:hover,
+.ps__rail-x:hover,
+.ps .ps__rail-y.ps--clicking {
+    background-color: transparent !important;
+}
+
+.section .container {
+    padding-top: 0 !important;
+}
+
+a {
+    text-decoration: none !important;
+}
