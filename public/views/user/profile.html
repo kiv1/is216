@@ -27,8 +27,8 @@
                             <br />
                             <form class="form w-100">
                                 <div class="row">
+                                    <label>Telegram Handle:</label>
                                     <div class="input-group mb-3">
-                                        <label class="input-group-text">Telegram Handle:</label>
                                         <input
                                             type="text"
                                             class="form-control"
@@ -45,33 +45,35 @@
                             </form>
                             <form class="form">
                                 <div class="row">
+                                    <label>Schoool</label>
                                     <div class="input-group mb-3">
-                                        <label class="input-group-text">Schoool</label>
                                         <select v-model="userSchool" class="form-select" required>
                                             <option v-for="oneSchool in schoolOptions" :value="oneSchool.id">
                                                 {{oneSchool.name}}
                                             </option>
                                         </select>
                                     </div>
+                                    <label>Course</label>
                                     <div class="input-group mb-3">
-                                        <label class="input-group-text">Course</label>
                                         <select v-model="userCourse" class="form-select" required>
                                             <option v-for="oneCourse in courseOption" :value="oneCourse.id">
                                                 {{oneCourse.name}}
                                             </option>
                                         </select>
                                     </div>
+                                    <label>Modules taking/taken</label>
                                     <div class="input-group mb-3">
-                                        <label class="input-group-text">Modules taking/taken</label>
-                                        <span class="m-2" v-if="userMods.length<1">*Please select at least 4 mods</span>
+                                        <span class="ms-3" v-if="userMods.length<1"
+                                            >*Please select at least 4 mods</span
+                                        >
                                         <template v-for="oneMod in userMods">
                                             <span @click="removeMod(oneMod)" class="badge bg-secondary m-1"
                                                 >{{oneMod.id}} <i class="bi bi-x-lg"></i>
                                             </span>
                                         </template>
                                     </div>
+                                    <label>Search for modules</label>
                                     <div class="input-group mb-3 autocomplete">
-                                        <label class="input-group-text">Search for modules</label>
                                         <input v-model="searchMods" class="form-control" />
                                         <div v-if="searchMods" class="autocomplete-items">
                                             <div v-for="oneMod in filterModsOption" @click="chooseMod(oneMod)">
