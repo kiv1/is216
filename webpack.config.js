@@ -1,10 +1,10 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
-const { EnvironmentPlugin } = require('webpack');
+const webpack = require('webpack');
 
 const baseConfig = {
     name: 'base',
-    mode: 'development',
+    mode: 'production',
     entry: {
         bundle: './public/src/index.js',
     },
@@ -31,7 +31,14 @@ const baseConfig = {
     optimization: {
         minimize: true,
     },
-    plugins: [new VueLoaderPlugin()],
+    devtool: false,
+    plugins: [
+        new VueLoaderPlugin(),
+        new webpack.DefinePlugin({
+            __VUE_OPTIONS_API__: true,
+            __VUE_PROD_DEVTOOLS__: false,
+        }),
+    ],
 };
 
 module.exports = [baseConfig];
