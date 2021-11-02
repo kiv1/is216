@@ -2,7 +2,7 @@
     <footer id="footer">
         <div class="container footer-bottom clearfix">
             <div class="copyright">
-                &copy; Copyright <strong><span>LOREM</span></strong
+                &copy; Copyright <strong><span>SMU Study Buddy</span></strong
                 >. All Rights Reserved
             </div>
             <div class="credits">
@@ -18,15 +18,12 @@
     </footer>
 </template>
 <script>
-    export default {
+export default {
     name: 'footer-component',
-        data() {
-            return {
-            };
-        },
-        mounted() {
-        },
-        methods: { 
-        }
-    }
+    data() {
+        return {};
+    },
+    mounted() {},
+    methods: {},
+};
 </script>

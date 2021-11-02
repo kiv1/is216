@@ -57,6 +57,10 @@ router.post('/SetProfile', async (req, res) => {
             res.status(401).send({ result: false, msg: courseResult.result });
             return;
         }
+        if (mods.length < 4) {
+            res.status(401).send({ result: false, msg: 'You need to choose at least 4 modules' });
+            return;
+        }
         for (let index = 0; index < mods.length; index++) {
             const element = mods[index];
             let modResult = await azureLL.getOneMod(element.id);
