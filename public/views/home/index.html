@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
         <script src="/dist/bundle.js"></script>
         <link rel="stylesheet" href="/css/bootstrap-icons.css" />
+        <link rel="stylesheet" href="/css/custom.css" />
     </head>
 
     <body>
@@ -14,83 +15,142 @@
             <navbar-component></navbar-component>
             <loading-component v-show="isLoading"></loading-component>
             <div class="content">
-                <!-- ======= Hero Section ======= -->
-                <section class="hero section">
+                <!-- <div id="home-img"></div> -->
+                <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="../../img/study bddy coverpage.jpg" class="d-block w-100" @load="onImgLoad(0)" />
+                        </div>
+                    </div>
+                </div>
+                <section class="hero section about-us">
                     <div class="container">
                         <div class="row">
-                            <div
-                                class="
-                                    col-lg-6
-                                    d-flex
-                                    flex-column
-                                    justify-content-center
-                                    pt-4 pt-lg-0
-                                    order-2 order-lg-1
-                                "
-                                data-aos="fade-up"
-                                data-aos-delay="200"
-                            >
-                                <h1>Your one stop solution to find your Study Buddy</h1>
-                                <h2>Find your Study Buddy today!</h2>
-                                <div class="d-flex justify-content-center justify-content-lg-start">
-                                    <a href="/user/" class="btn-get-started">Get Started</a>
+                            <div class="col-lg-5 col-xl-5">
+                                <div class="image-container">
+                                    <img
+                                        class="img-fluid w-70"
+                                        src="img/student.png"
+                                        alt="alternative"
+                                        @load="onImgLoad(1)"
+                                    />
                                 </div>
                             </div>
-                            <div class="col-lg-6 order-1 order-lg-2 hero-img">
-                                <img src="/img/student.png" class="img-fluid" alt="" @load="onImgLoad(0)" />
+                            <div class="col-lg-7 col-xl-7 text-center">
+                                <div class="text-container">
+                                    <h1 class="mb-5">ABOUT US</h1>
+                                    <p class="mb-5 fs-5">
+                                        <b>SMU Study Buddy</b> was founded in the midst of the COVID-19 pandemic when
+                                        regulations kicked in where the <b>maximum group of 2</b> is allowed to be
+                                        together at any time.
+                                    </p>
+                                    <p class="mb-5 fs-5">
+                                        We hope that this platform helps students to <b>Reach Out to a New Buddy</b> to
+                                        study together. As we believe that studying together physically may
+                                        <b>boost productivity</b> and help students be at the
+                                        <b>peak of their performance</b>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="section how-it-works">
+                    <div class="container">
+                        <div class="row">
+                            <div class="text-container text-center">
+                                <h1>HOW IT WORKS</h1>
+                            </div>
+                        </div>
+                        <div class="row row-cols-md-3 row-cols-1 g-4">
+                            <div class="col">
+                                <div class="card h-100">
+                                    <img src="img/Picture1.jpg" class="card-img-top m-auto" @load="onImgLoad(2)" />
+                                    <div class="card-body text-center">
+                                        <h4 class="card-title">Create Your Profile</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100">
+                                    <img src="img/Picture2.png" class="card-img-top m-auto" @load="onImgLoad(3)" />
+                                    <div class="card-body text-center">
+                                        <h4 class="card-title">Connect with a Buddy</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100">
+                                    <img src="img/Picture 3.jpg" class="card-img-top m-auto" @load="onImgLoad(4)" />
+                                    <div class="card-body text-center">
+                                        <h4 class="card-title">Accept, Chat & Meet</h4>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Section 1 -->
-                <section class="section">
+                <section class="section reviews">
                     <div class="container">
                         <div class="row">
-                            <div class="col-lg-6 col-xl-5">
-                                <div class="image-container">
-                                    <img class="img-fluid" src="img/1.png" alt="alternative" @load="onImgLoad(1)" />
-                                </div>
+                            <div class="col-lg-4">
+                                <div id="reviewCircleTitle" class="mx-lg-auto">Listen From Our Users!</div>
                             </div>
-                            <div class="col-lg-6 col-xl-7">
-                                <div class="text-container">
-                                    <h2>Find your perfect Stuudy Buddy</h2>
-                                    <ul class="list-unstyled li-space-lg">
-                                        <li class="d-flex">
-                                            <i class="bi bi-square-fill align-middle"></i>
-                                            <div class="flex-grow-1"
-                                                >Matches are based on what modules you have taken or modules you are
-                                                going to take</div
-                                            >
-                                        </li>
-                                        <li class="d-flex">
-                                            <i class="bi bi-square-fill"></i>
-                                            <div class="flex-grow-1">
-                                                Score well in your upcoming semester by finding a Study Buddy to share
-                                                notes
+                            <div class="col-lg-8">
+                                <div
+                                    id="reviewCarousel"
+                                    class="carousel slide"
+                                    data-bs-ride="carousel"
+                                    data-bs-interval="5000"
+                                >
+                                    <div class="carousel-indicators">
+                                        <button
+                                            type="button"
+                                            data-bs-target="#carouselExampleIndicators"
+                                            data-bs-slide-to="0"
+                                            class="active"
+                                            aria-current="true"
+                                            aria-label="Slide 1"
+                                        ></button>
+                                        <button
+                                            type="button"
+                                            data-bs-target="#carouselExampleIndicators"
+                                            data-bs-slide-to="1"
+                                            aria-label="Slide 2"
+                                        ></button>
+                                    </div>
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <div class="review-container">
+                                                <div class="review-text fs-5">
+                                                    1Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
+                                                    eaque nulla officiis dolores suscipit libero amet. Natus non
+                                                    sapiente, debitis.
+                                                </div>
+
+                                                <div class="review-name-container">
+                                                    <span class="review-dash">&#8212;</span>
+                                                    <span class="review-name">John Doe</span>
+                                                </div>
                                             </div>
-                                        </li>
-                                        <li class="d-flex">
-                                            <i class="bi bi-square-fill"></i>
-                                            <div class="flex-grow-1"
-                                                >Boost your study efficieny safely in accordance to government
-                                                guidlines</div
-                                            >
-                                        </li>
-                                        <li class="d-flex">
-                                            <i class="bi bi-square-fill"></i>
-                                            <div class="flex-grow-1"
-                                                >All Telegram handles will only be availble upon accepting each other
-                                                request</div
-                                            >
-                                        </li>
-                                    </ul>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div class="review-container">
+                                                <div class="review-text fs-5">
+                                                    2Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
+                                                    eaque nulla officiis dolores suscipit libero amet. Natus non
+                                                    sapiente, debitis.
+                                                </div>
+
+                                                <div class="review-name-container">
+                                                    <span class="review-dash">&#8212;</span>
+                                                    <span class="review-name">John Doe</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row text-center pb-5">
-                            <div class="text-center">
-                                <a class="btn-get-started" href="/user/">Find your Study Buddy today</a>
                             </div>
                         </div>
                     </div>
@@ -105,7 +165,7 @@
             data() {
                 return {
                     isLoading: false,
-                    isFileLoading: [true, true],
+                    isFileLoading: [true, true, true, true, true],
                 };
             },
             mounted() {

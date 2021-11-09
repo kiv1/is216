@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
         <script src="/dist/bundle.js"></script>
         <link rel="stylesheet" href="/css/bootstrap-icons.css" />
+        <link rel="stylesheet" href="/css/custom.css">
     </head>
 
     <body>
@@ -14,19 +15,7 @@
             <navbar-component></navbar-component>
             <loading-component v-show="isLoading"></loading-component>
             <div class="content">
-                <section class="section">
-                    <div class="container">
-                        <div class="d-flex flex-column h-75 justify-content-center align-items-center">
-                            <h1>About</h1>
-                            <p
-                                >SMU Study Buddy was founded in the midst of the COVID-19 pandemic when regulations
-                                kicked in where the maximum group of 2 is allowed to be together at anytime. With SMU
-                                Study Buddy we hope that studying together physically may boost productivity and help
-                                student be at the peak of their performance.
-                            </p>
-                        </div>
-                    </div>
-                </section>
+                <google-map></google-map>
             </div>
             <footer-component></footer-component>
         </div>
@@ -35,16 +24,22 @@
         const app = Vue.createApp({
             el: '#app',
             data() {
-                return {
-                    isLoading: false,
-                };
+                return {};
             },
-            mounted() {},
+            mounted() {
+                // this.isLoading = true;
+            },
             methods: {},
         });
+        app.component('google-map', googleMap);
         app.component('navbar-component', navbar);
         app.component('loading-component', loadingPage);
         app.component('footer-component', footer);
         app.mount('#app');
     </script>
+    <!-- <script
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh3KACE6lIrQ3LybwH_r-didxJZVBDYV4&callback=initMap"
+    ></script> -->
+    <!-- <script src="https://unpkg.com/vue3-google-map"></script> -->
 </html>
