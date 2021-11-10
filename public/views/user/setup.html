@@ -41,6 +41,7 @@
                                             >Verify</button
                                         >
                                     </div>
+                                    <p v-if="userTelegramError" class="text-danger">{{userTelegramError}}</p>
                                     <template v-if="hasUserClickVerify">
                                         <label>OTP</label>
                                         <div class="input-group mb-3">
@@ -142,6 +143,7 @@
                     searchMods: '',
                     //Telegram related fields
                     userTelegram: '',
+                    userTelegramError: '',
                     usernameVerified: false,
                     userOTP: '',
                     hasUserClickVerify: false,
@@ -219,6 +221,7 @@
                 },
                 resetTelegram() {
                     this.userTelegram = '';
+                    this.userTelegramError = '';
                     this.usernameVerified = false;
                     this.userOTP = '';
                     this.hasUserClickVerify = false;
@@ -259,10 +262,17 @@
             },
             computed: {
                 isTelegramVerifyButtonDisabled() {
+                    this.userTelegram = this.userTelegram.trim();
+                    this.userTelegramError = '';
                     if (!this.userTelegram) {
                         return true;
                     } else {
-                        return false;
+                        if (this.userTelegram.startsWith('@')) {
+                            this.userTelegramError = 'Please remove the @ character';
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                 },
                 courseOption() {

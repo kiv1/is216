@@ -561,3 +561,12 @@
 .max-z {
     z-index: 9999;
 }
+
+.rating {
+    font-size: 1.2rem;
+}
+
+.review-scroll {
+    height: calc(100vh * 0.4);
+    overflow-y: scroll;
+}

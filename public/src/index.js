@@ -12,6 +12,7 @@ import modalComponent from './components/modal';
 import footerComponent from './components/footer';
 import telegramModalComponent from './components/telegrammodal';
 import connectModalComponent from './components/connectmodal';
+import ratingModalComponent from './components/ratingmodal';
 
 global.toast = createToast;
 global.navbar = navbarComponent;
@@ -20,3 +21,4 @@ global.modal = modalComponent;
 global.footer = footerComponent;
 global.telegramModalComponent = telegramModalComponent;
 global.connectModalComponent = connectModalComponent;
+global.ratingModalComponent = ratingModalComponent;

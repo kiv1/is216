@@ -1,0 +1,243 @@
+<html>
+    <head>
+        <title>SMU Study Buddy</title>
+        <link rel="shortcut icon" type="image/png" href="/img/logo.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/css/toast.css" />
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <script src="/dist/bundle.js"></script>
+        <link rel="stylesheet" href="/css/bootstrap-icons.css" />
+    </head>
+
+    <body>
+        <div id="app">
+            <loading-component v-show="isLoading"></loading-component>
+            <navbar-component></navbar-component>
+            <connect-modal-component
+                ref="modal"
+                v-show="isModalOpen"
+                v-on:closemodal="closeModal()"
+                v-on:isLoading="changeLoading()"
+                v-on:refresh="getUserProfile()"
+            ></connect-modal-component>
+            <rating-modal-component
+                ref="ratingModal"
+                v-show="isRatingModalOpen"
+                v-on:closemodal="closeModal()"
+                v-on:isLoading="changeLoading()"
+                v-on:refresh="getUserProfile()"
+            ></rating-modal-component>
+            <div class="content">
+                <section class="section">
+                    <div class="h-100 container">
+                        <div class="h-100 mt-3 d-flex flex-column align-items-center">
+                            <h3>{{name}} Profile</h3>
+                            <template v-if="rating ==  0|| !rating"><p class="mb-3">No ratings yet</p></template>
+                            <template v-else
+                                ><div class="rating">
+                                    <i v-for="n in rating" class="bi bi-star-fill me-1 text-warning"></i>
+                                    <i v-for="n in (5-rating)" class="bi bi-star me-1 text-warning"></i> </div
+                            ></template>
+
+                            <br />
+                            <div class="row">
+                                <div class="col-lg row">
+                                    <div class="input-group mb-3">
+                                        Hi there! My name is {{name}}.<br />
+                                        <br />
+                                        I am from the {{schoolOptions[userSchool-1][1].name}}<br />
+                                        <br />
+                                        and taking {{allCourseOptions[userCourse-1][1].name}}<br />
+                                        <br />
+                                        Below is a list of modules I have taken or taking currently:
+                                        <br />
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <template v-for="oneMod in userMods">
+                                            <span class="badge bg-secondary m-1">{{oneMod.id}} </span>
+                                        </template>
+                                    </div>
+                                    <label class="mb-3" v-if="userTelegram"
+                                        >Contact me at:
+                                        <a :href="'https://t.me/'+userTelegram" target="_blank">@{{userTelegram}}</a>
+                                    </label>
+                                    <button
+                                        v-if="isAwaitingAction"
+                                        type="button button-sm"
+                                        @click="showModal()"
+                                        class="ms-2 mb-3 btn btn-outline-primary w-100"
+                                    >
+                                        <i class="bi bi-book"></i>&nbsp Connect</button
+                                    >
+                                    <label v-if="isUserPending" class="mb-3"
+                                        >Awaiting User to confirm your request</label
+                                    >
+                                </div>
+                                <div class="col-lg">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h3>Reviews</h3>
+                                        </div>
+                                        <div class="col">
+                                            <button
+                                                v-if="!hasRated && isUserBuddy"
+                                                type="button"
+                                                class="float-end btn button-sm btn-outline-primary"
+                                                @click="showRatingModal()"
+                                            >
+                                                <i class="bi bi-star"></i>&nbsp Rate
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <label v-if="userReviews.length == 0" class="mb-3"
+                                            >There is currently no reviews</label
+                                        >
+                                        <ul v-if="userReviews.length != 0" class="list-group w-100 review-scroll">
+                                            <template v-for="oneReview in userReviews">
+                                                <li class="list-group-item">
+                                                    <div class="rating">
+                                                        <i
+                                                            v-for="n in oneReview.rating"
+                                                            class="bi bi-star-fill me-1 text-warning"
+                                                        ></i>
+                                                        <i
+                                                            v-for="n in (5-oneReview.rating)"
+                                                            class="bi bi-star me-1 text-warning"
+                                                        ></i>
+                                                    </div>
+                                                    <div> {{oneReview.review}} - By: {{oneReview.reviewBy}}</div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div> </div>
+                </section>
+            </div>
+            <footer-component></footer-component>
+        </div>
+    </body>
+    <script>
+        const app = Vue.createApp({
+            el: '#app',
+            data() {
+                return {
+                    isLoading: false,
+                    schoolOptions: [],
+                    allCourseOptions: [],
+                    allModsOptions: [],
+                    userSchool: 1,
+                    userCourse: null,
+                    userMods: [],
+                    searchMods: '',
+                    userTelegram: '',
+                    isModalOpen: false,
+                    rating: 0,
+                    name: '',
+                    uid: '',
+                    isAwaitingAction: false,
+                    isUserPending: false,
+                    userReviews: [],
+                    isRatingModalOpen: false,
+                    isUserBuddy: false,
+                    hasRated: true,
+                };
+            },
+            mounted() {
+                let getData = [this.getAllUserSetting()];
+                Promise.all(getData).then(() => {
+                    this.getUserProfile();
+                });
+            },
+            methods: {
+                changeLoading() {
+                    this.isLoading = !this.isLoading;
+                },
+                showModal(uid, name) {
+                    this.isModalOpen = true;
+                    this.$refs.modal.uid = this.uid;
+                    this.$refs.modal.name = this.name;
+                },
+                closeModal() {
+                    this.isModalOpen = false;
+                    this.isRatingModalOpen = false;
+                },
+                showRatingModal() {
+                    this.isRatingModalOpen = true;
+                    this.$refs.ratingModal.uid = this.uid;
+                    this.$refs.ratingModal.name = this.name;
+                },
+                getAllUserSetting() {
+                    return axios
+                        .get('../services/GetAllUserSetting')
+                        .then(({ data }) => {
+                            this.allModsOptions = data.mods;
+                            this.allCourseOptions = Object.entries(data.course);
+                            this.schoolOptions = Object.entries(data.school);
+                        })
+                        .catch((error) => {
+                            this.isLoading = false;
+                        });
+                },
+                getUserProfile() {
+                    this.isModalOpen = false;
+                    this.isLoading = true;
+                    var currentUrl = window.location.href;
+                    var urlObj = new URL(currentUrl);
+                    this.uid = urlObj.searchParams.get('uid');
+                    return axios
+                        .get('../services/GetUserProfile?uid=' + this.uid)
+                        .then(({ data }) => {
+                            this.userTelegram = data.user.telegram;
+                            this.userSchool = data.user.school;
+                            this.userCourse = data.user.course;
+                            this.userMods = data.mods;
+                            this.name = data.user.name;
+                            this.rating = data.rating;
+                            this.isLoading = false;
+                            this.isAwaitingAction = data.isAwaitingAction;
+                            this.isUserPending = data.isUserPending;
+                            this.userReviews = data.reviews;
+                            this.isUserBuddy = data.isUserBuddy;
+                            this.hasRated = data.hasRated;
+                            console.log(data);
+                        })
+                        .catch((error) => {
+                            this.isLoading = false;
+                            toast(error.response.data, {
+                                position: 'top-right',
+                                type: 'danger',
+                                showIcon: 'true',
+                            });
+                        });
+                },
+            },
+            computed: {
+                courseOption() {
+                    let temp = [];
+                    this.allCourseOptions.forEach((oneCourse) => {
+                        if (oneCourse.schoolId == this.userSchool) {
+                            temp.push(oneCourse);
+                        }
+                    });
+                    if (temp.filter((e) => e.id == this.userCourse).length === 0) {
+                        this.userCourse = null;
+                    }
+                    return temp;
+                },
+            },
+        });
+        app.component('connect-modal-component', connectModalComponent);
+        app.component('rating-modal-component', ratingModalComponent);
+        app.component('navbar-component', navbar);
+        app.component('loading-component', loadingPage);
+        app.component('footer-component', footer);
+        app.mount('#app');
+    </script>
+</html>

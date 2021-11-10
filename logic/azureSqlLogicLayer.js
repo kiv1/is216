@@ -1,6 +1,7 @@
 const { Connection, Request } = require('tedious');
 var TYPES = require('tedious').TYPES;
 
+const { v4: uuidv4 } = require('uuid');
 // Create connection to database
 const config = {
     authentication: {
@@ -367,6 +368,138 @@ async function insertUserMods(userMod) {
     });
 }
 
+async function getAllReview(uid) {
+    return new Promise((resolve, reject) => {
+        const request = new Request(
+            `SELECT r.Rating, r.Review, u.Name FROM Review r, [user] u where u.UID  = r.GivenBy and r.UID = @uid `,
+            (err, rowCount, rows) => {
+                if (err) {
+                    console.log(err);
+                    resolve({
+                        status: false,
+                        result: err.message,
+                    });
+                } else {
+                    let result = [];
+                    if (rowCount > 0) {
+                        rows.forEach((columns) => {
+                            result.push({
+                                rating: columns[0].value,
+                                review: columns[1].value,
+                                reviewBy: columns[2].value,
+                            });
+                        });
+                    }
+                    resolve({
+                        status: true,
+                        result: result,
+                    });
+                }
+            }
+        );
+        request.addParameter('uid', TYPES.VarChar, uid);
+        connection.execSql(request);
+    });
+}
+
+async function insertReview(userReview) {
+    return new Promise((resolve, reject) => {
+        const request = new Request(
+            `INSERT INTO Review VALUES (@id, @uid, @review, @rating, @givenBy)`,
+            (err, rowCount, rows) => {
+                if (err) {
+                    console.log(err);
+                    resolve({
+                        status: false,
+                        result: err.message,
+                    });
+                } else {
+                    if (rowCount == 1) {
+                        resolve({
+                            status: true,
+                            result: rowCount,
+                        });
+                    } else {
+                        resolve({
+                            status: false,
+                            result: 'Something went wrong! Please try again!',
+                        });
+                    }
+                }
+            }
+        );
+
+        request.addParameter('id', TYPES.VarChar, uuidv4());
+        request.addParameter('uid', TYPES.VarChar, userReview.uid);
+        request.addParameter('review', TYPES.VarChar, userReview.review);
+        request.addParameter('rating', TYPES.VarChar, userReview.rating);
+        request.addParameter('givenBy', TYPES.VarChar, userReview.givenBy);
+
+        connection.execSql(request);
+    });
+}
+
+async function getAvgRating(uid) {
+    return new Promise((resolve, reject) => {
+        const request = new Request(`SELECT AVG(Rating) from Review Where uid = @uid`, (err, rowCount, rows) => {
+            if (err) {
+                console.log(err);
+                resolve({
+                    status: false,
+                    result: err.message,
+                });
+            } else {
+                let result = [];
+                rows.forEach((columns) => {
+                    result.push(columns[0].value);
+                });
+                resolve({
+                    status: true,
+                    result: result,
+                });
+            }
+        });
+
+        request.addParameter('uid', TYPES.VarChar, uid);
+
+        connection.execSql(request);
+    });
+}
+
+async function hasUserRated(userUid, reviewedUID) {
+    return new Promise((resolve, reject) => {
+        const request = new Request(
+            `SELECT * from Review Where GivenBy = @uid and UID = @reviewUID`,
+            (err, rowCount, rows) => {
+                if (err) {
+                    console.log(err);
+                    resolve({
+                        status: false,
+                        result: err.message,
+                    });
+                } else {
+                    if (rowCount >= 1) {
+                        resolve({
+                            status: true,
+                            result: true,
+                        });
+                    } else {
+                        resolve({
+                            status: false,
+                            result: false,
+                        });
+                    }
+                }
+            }
+        );
+
+        request.addParameter('uid', TYPES.VarChar, userUid);
+        request.addParameter('reviewUID', TYPES.VarChar, reviewedUID);
+
+        connection.execSql(request);
+    });
+}
+
 async function deleteUserMods(uid) {
     return new Promise((resolve, reject) => {
         const request = new Request(`DELETE FROM  UserMods where UserID = @uid`, (err, rowCount, rows) => {
@@ -461,7 +594,7 @@ async function getUserData(uid) {
 async function findRequest(uid, otherUID) {
     return new Promise((resolve, reject) => {
         const request = new Request(
-            `Select * from [Request] where (UID = @uid and OtherUID = @otherUID) or (UID = @otherUID and OtherUID = @uid)`,
+            `Select * from [Request] where UID = @uid and otherUID = @otherUID and isPending = 1`,
             (err, rowCount, rows) => {
                 if (err) {
                     console.log(err);
@@ -479,6 +612,39 @@ async function findRequest(uid, otherUID) {
                         resolve({
                             status: false,
                             result: 'Something went wrong! Please try again!',
+                        });
+                    }
+                }
+            }
+        );
+        request.addParameter('uid', TYPES.VarChar, uid);
+        request.addParameter('otherUID', TYPES.VarChar, otherUID);
+
+        connection.execSql(request);
+    });
+}
+
+async function isUserBuddy(uid, otherUID) {
+    return new Promise((resolve, reject) => {
+        const request = new Request(
+            `Select * from [Request] where ((UID = @uid and OtherUID = @otherUID) or (UID = @otherUID and OtherUID = @uid)) and isPending = 0`,
+            (err, rowCount, rows) => {
+                if (err) {
+                    console.log(err);
+                    resolve({
+                        status: false,
+                        result: err.message,
+                    });
+                } else {
+                    if (rowCount == 1) {
+                        resolve({
+                            status: true,
+                            result: true,
+                        });
+                    } else {
+                        resolve({
+                            status: true,
+                            result: false,
                         });
                     }
                 }
@@ -730,4 +896,9 @@ module.exports = {
     getAllPendingRequestForAction,
     getAllPendingRequestForNoAction,
     getAllAcceptedRequest,
+    insertReview,
+    getAvgRating,
+    hasUserRated,
+    isUserBuddy,
+    getAllReview,
 };

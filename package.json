@@ -20,6 +20,7 @@
         "style-loader": "^3.2.1",
         "tedious": "^14.0.0",
         "telegram": "^1.9.6",
+        "uuid": "^8.3.2",
         "vue": "^3.2.11",
         "vue-loader": "^16.5.0",
         "vue-upload-component": "^3.0.50"

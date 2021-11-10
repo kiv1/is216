@@ -59,7 +59,12 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a class="nav-link dropdown-item" href="/user/profile">My Profile</a>
+                                    <a class="nav-link dropdown-item" :href="'/user/profilepage?uid=' + uid"
+                                        >My Profile</a
+                                    >
+                                </li>
+                                <li>
+                                    <a class="nav-link dropdown-item" href="/user/profile">Edit Profile</a>
                                 </li>
                                 <li>
                                     <a class="nav-link dropdown-item" href="/user/logout">Logout</a>
@@ -82,6 +87,7 @@ export default {
             isLogin: false,
             email: '',
             name: '',
+            uid: '',
             pictureUrl: '/img/user.png',
             isOpen: false,
         };
@@ -100,7 +106,7 @@ export default {
                 .then(({ data }) => {
                     this.email = data.email;
                     this.name = data.email;
-
+                    this.uid = data.uid;
                     if ('name' in data) {
                         this.name = data.name;
                     }

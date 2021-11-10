@@ -18,6 +18,7 @@ router.get('/GetUserData', async (req, res) => {
     try {
         let user = await firebaseLL.getUser(sessionCookie);
         res.send({
+            uid: user.uid,
             name: user.name,
             email: user.email,
             picture: user.picture,
@@ -69,7 +70,6 @@ router.post('/SetProfile', async (req, res) => {
                 return;
             }
         }
-        // Insert into db here!
         let userObj = {
             uid: user.uid,
             name: user.name,
@@ -216,6 +216,8 @@ router.get('/GetAllUsers', async (req, res) => {
                     count++;
                 }
             });
+            let ratingResult = await azureLL.getAvgRating(element.uid);
+            temp.rating = ratingResult.result[0];
             temp.similarity = Math.round((count / userMods.result.length) * 100);
             toReturn.push(temp);
         }
@@ -251,6 +253,8 @@ router.get('/GetAllPendingRequest', async (req, res) => {
                     count++;
                 }
             });
+            let ratingResult = await azureLL.getAvgRating(element.uid);
+            temp.rating = ratingResult.result[0];
             temp.similarity = Math.round((count / userMods.result.length) * 100);
             toReturn.push(temp);
         }
@@ -266,6 +270,8 @@ router.get('/GetAllPendingRequest', async (req, res) => {
                     count++;
                 }
             });
+            let ratingResult = await azureLL.getAvgRating(element.uid);
+            temp.rating = ratingResult.result[0];
             temp.similarity = Math.round((count / userMods.result.length) * 100);
             toReturn.push(temp);
         }
@@ -281,6 +287,10 @@ router.get('/GetAllPendingRequest', async (req, res) => {
                     count++;
                 }
             });
+            let hasRating = await azureLL.hasUserRated(user.uid, element.uid);
+            let ratingResult = await azureLL.getAvgRating(element.uid);
+            temp.rating = ratingResult.result[0];
+            temp.hasRated = hasRating.result;
             temp.similarity = Math.round((count / userMods.result.length) * 100);
             accepted.push(temp);
         }
@@ -298,13 +308,46 @@ router.get('/GetAllPendingRequest', async (req, res) => {
 router.get('/GetUserProfile', async (req, res) => {
     try {
         const sessionCookie = req.cookies.session;
+        let uid = req.query.uid;
         let user = await firebaseLL.getUser(sessionCookie);
-        let userProfile = await azureLL.getUserData(user.uid);
-        let userMods = await azureLL.getUserMods(user.uid);
-        res.send({
-            user: userProfile.result[0],
-            mods: userMods.result,
-        });
+        if (uid == null) {
+            let userProfile = await azureLL.getUserData(user.uid);
+            let userMods = await azureLL.getUserMods(user.uid);
+            res.send({
+                user: userProfile.result[0],
+                mods: userMods.result,
+            });
+        } else {
+            let userProfile = await azureLL.getUserData(uid);
+            if (!userProfile.status) {
+                res.status(401).send('No account found!');
+            }
+            let isUserBuddy = await azureLL.isUserBuddy(uid, user.uid);
+            let hasRatedResult = await azureLL.hasUserRated(user.uid, uid);
+            let isUserPending = false;
+            let isAwaitingAction = false;
+
+            if (!isUserBuddy.result) {
+                userProfile.result[0].telegram = '';
+                let isUserPendingR = await azureLL.findRequest(user.uid, uid);
+                let isAwaitingActionR = await azureLL.findRequest(uid, user.uid);
+                isUserPending = isUserPendingR.status;
+                isAwaitingAction = isAwaitingActionR.status;
+            }
+            let allReviewResult = await azureLL.getAllReview(uid);
+            let userMods = await azureLL.getUserMods(uid);
+            let ratingResult = await azureLL.getAvgRating(uid);
+            res.send({
+                user: userProfile.result[0],
+                mods: userMods.result,
+                rating: ratingResult.result[0],
+                isUserBuddy: isUserBuddy.result,
+                hasRated: hasRatedResult.result,
+                isUserPending: isUserPending,
+                isAwaitingAction: isAwaitingAction,
+                reviews: allReviewResult.result,
+            });
+        }
     } catch (err) {
         console.log(err);
         res.status(401).send('UnAuthorised Request');
@@ -411,7 +454,15 @@ router.post('/Connect', async (req, res) => {
         } else {
             let user = await firebaseLL.getUser(sessionCookie);
             let userProfile = await azureLL.getUserData(user.uid);
-            let foundRequest = await azureLL.findRequest(user.uid, uidToConnect);
+            let foundDuplicateRequest = await azureLL.findRequest(user.uid, uidToConnect);
+            if (foundDuplicateRequest.status) {
+                res.status(401).send({
+                    result: false,
+                    msg: 'You have submitted a request already',
+                });
+                return;
+            }
+            let foundRequest = await azureLL.findRequest(uidToConnect, user.uid);
             if (foundRequest.status) {
                 await telegramLL.sendConfirmation(
                     otherUser.result[0].telegram,
@@ -434,6 +485,48 @@ router.post('/Connect', async (req, res) => {
                     result: true,
                 });
             }
+            return;
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(401).send('UnAuthorised Request');
+        return;
+    }
+});
+
+router.post('/Review', async (req, res) => {
+    try {
+        const sessionCookie = req.cookies.session;
+        let uidToReview = req.body.uid;
+        let user = await firebaseLL.getUser(sessionCookie);
+        let isUserBuddy = await azureLL.isUserBuddy(uidToReview, user.uid);
+        if (!isUserBuddy.result) {
+            res.status(401).send({ result: false, msg: 'You are not their buddy yet' });
+            return;
+        }
+        let hasRating = await azureLL.hasUserRated(user.uid, uidToReview);
+        if (hasRating.result) {
+            res.status(401).send({ result: false, msg: 'Your rating has already been given' });
+            return;
+        }
+
+        let rating = req.body.rating;
+        let review = req.body.review;
+        let reviewObj = {
+            uid: uidToReview,
+            rating: rating.toString(),
+            review: review,
+            givenBy: user.uid,
+        };
+        let reviewResult = await azureLL.insertReview(reviewObj);
+        if (reviewResult.status) {
+            res.status(200).send({
+                result: true,
+            });
+            return;
+        } else {
+            res.status(401).send({ result: false, msg: reviewResult.result });
+
             return;
         }
     } catch (err) {

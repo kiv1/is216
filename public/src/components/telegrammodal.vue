@@ -24,12 +24,14 @@
                                     />
                                     <button
                                         type="button"
-                                        :disabled="!userTelegram || hasUserClickVerify"
+                                        :disabled="isTelegramVerifyButtonDisabled || hasUserClickVerify"
                                         @click="verifyUsername"
                                         class="btn btn-primary float-end"
                                         >Verify</button
                                     >
                                 </div>
+                                <p v-if="userTelegramError" class="text-danger">{{ userTelegramError }}</p>
+
                                 <template v-if="hasUserClickVerify">
                                     <label>OTP</label>
 
@@ -76,6 +78,7 @@ export default {
             usernameVerified: false,
             userOTP: '',
             hasUserClickVerify: false,
+            userTelegramError: '',
         };
     },
     mounted() {},
@@ -131,6 +134,22 @@ export default {
             this.usernameVerified = false;
             this.userOTP = '';
             this.hasUserClickVerify = false;
+        },
+    },
+    computed: {
+        isTelegramVerifyButtonDisabled() {
+            this.userTelegram = this.userTelegram.trim();
+            this.userTelegramError = '';
+            if (!this.userTelegram) {
+                return true;
+            } else {
+                if (this.userTelegram.startsWith('@')) {
+                    this.userTelegramError = 'Please remove the @ character';
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         },
     },
 };

@@ -33,9 +33,7 @@ export default {
             uid: '',
         };
     },
-    mounted() {
-        this.$emit('isloading');
-    },
+    mounted() {},
     emits: ['closemodal', 'refresh', 'isloading'],
     methods: {
         connect() {
