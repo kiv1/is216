@@ -27,6 +27,20 @@ export default {
             userLocation: {},
             isLoading: false,
             markers: [],
+            placesService: null,
+            placesRequestFields: [
+                'name',
+                'geometry',
+                'business_status',
+                'formatted_address',
+                'opening_hours',
+                'url',
+                'website',
+                'rating',
+                'reviews',
+                'photos',
+                'user_ratings_total',
+            ],
         };
     },
     mounted() {
@@ -51,42 +65,28 @@ export default {
                 });
         },
         async getMap() {
-            console.log(`getMap`);
             this.getUserLocation();
 
             this.loader.load().then(() => {
                 this.map = new google.maps.Map(document.getElementById('map'), this.mapOptions);
                 this.infowindow = new google.maps.InfoWindow();
+                this.placesService = new google.maps.places.PlacesService(this.map);
 
                 this.markers = [];
 
                 if (this.markers.length === 0) {
-                    let placesService = new google.maps.places.PlacesService(this.map);
-                    placesService.textSearch(this.placesRequest, (results, status) => {
-                        console.log(status, google.maps.places.PlacesServiceStatus.OK);
+                    this.placesService.textSearch(this.placesRequest, (results, status) => {
                         if (status == google.maps.places.PlacesServiceStatus.OK) {
                             for (let i = 0; i < results.length; i++) {
                                 const place = results[i];
                                 let placeId = place.place_id;
                                 let request = {
                                     placeId: placeId,
-                                    fields: [
-                                        'geometry',
-                                        'business_status',
-                                        'formatted_address',
-                                        'opening_hours',
-                                        'url',
-                                        'website',
-                                        'rating',
-                                        'reviews',
-                                        'photos',
-                                    ],
+                                    fields: this.placesRequestFields,
                                 };
-                                placesService.getDetails(request, this.callback);
-                                //markers.push(this.createMarker(place));
+                                this.placesService.getDetails(request, this.callback);
                             }
                             this.map.setCenter(results[0].geometry.location);
-                            console.log(results[0]);
                         }
                     });
                 }
@@ -113,7 +113,6 @@ export default {
 
                 searchBox.addListener('places_changed', () => {
                     const places = searchBox.getPlaces();
-
                     if (places.length == 0) {
                         return;
                     }
@@ -127,32 +126,32 @@ export default {
                     // For each place, get the icon, name and location.
                     const bounds = new google.maps.LatLngBounds();
 
-                    places.forEach((place) => {
+                    for (let i = 0; i < places.length; i++) {
+                        const place = places[i];
                         if (!place.geometry || !place.geometry.location) {
                             console.log('Returned place contains no geometry');
                             return;
                         }
 
-                        // Create a marker for each place.
-                        let marker = this.createMarker(place);
+                        let request = {
+                            placeId: place.place_id,
+                            fields: this.placesRequestFields,
+                        };
 
-                        this.markers.push(marker);
+                        this.placesService.getDetails(request, this.callback);
+
                         if (place.geometry.viewport) {
-                            // Only geocodes have viewport.
                             bounds.union(place.geometry.viewport);
                         } else {
                             bounds.extend(place.geometry.location);
                         }
-                    });
+                    }
                     this.map.fitBounds(bounds);
-                    console.log(this.markers[0]);
-                    this.map.setCenter(this.markers[0].getPosition());
                 });
             });
         },
         callback(place, status) {
             if (status == google.maps.places.PlacesServiceStatus.OK) {
-                console.log(place);
                 this.markers.push(this.createMarker(place));
             }
         },
@@ -165,25 +164,57 @@ export default {
             });
 
             google.maps.event.addListener(marker, 'click', () => {
-                console.log(`marker click`, place.name);
-                console.log(place);
                 let infoHtml = `<div>`;
                 if (place.name) {
-                    infoHtml += `<h5>${place.name}</h5>`;
+                    if (place.website || place.url) {
+                        let placeUrl = place.website || place.url || '';
+                        infoHtml += `<h5><a href='${placeUrl}' target="_blank">${place.name}</a></h5>`;
+                    }
                 }
                 if (place.formatted_address) {
                     infoHtml += `<p>Located at ${place.formatted_address}</p>`;
                 }
-                if (place.price_level > 0) {
+                if (place.price_level && place.price_level > 0) {
                     infoHtml += `<p>Price: ${place.price_level}/5</p>`;
                 }
-                if (place.rating > 0 && place.user_ratings_total) {
-                    infoHtml += `<p>Rated ${place.rating} out of 5 by ${place.user_ratings_total} people</p>`;
+                if (place.rating & (place.rating > 0) && place.user_ratings_total) {
+                    infoHtml += `<p><span>Rated</span><span class="rating"> `;
+                    for (let i = 0; i < Math.floor(place.rating); i++) {
+                        infoHtml += `<i class="bi bi-star-fill me-1 text-warning"></i>`;
+                    }
+                    for (let i = 0; i < 5 - Math.floor(place.rating); i++) {
+                        infoHtml += `<i class="bi bi-star me-1 text-warning"></i>`;
+                    }
+                    infoHtml += `</span><span>by ${place.user_ratings_total} people</span></p>`;
                 }
                 if (place.photos.length > 0) {
-                    for (var photo of place.photos) {
-                        infoHtml += `<img style="height: 150px" src=${photo.getUrl()} />`;
+                    infoHtml += `
+                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="false">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img class="d-block mx-auto" style="height:250px" src=${place.photos[0].getUrl()}>
+                            </div>
+                        
+                    `;
+                    for (let i = 1; i < place.photos.length; i++) {
+                        const photo = place.photos[i];
+                        infoHtml += `
+                        <div class="carousel-item">
+                            <img class="d-block mx-auto" style="height:250px" src=${photo.getUrl()}">
+                        </div>
+                        `;
                     }
+                    infoHtml += `
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>`;
                 }
                 infoHtml += `</div>`;
                 this.infowindow.setContent(infoHtml);
