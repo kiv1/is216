@@ -23,7 +23,7 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
+                        <a class="nav-link" href="/places">Places To Study</a>
                     </li>
                     <li v-if="isLogin" class="nav-item">
                         <a class="nav-link" href="/user/dashboard">Dashboard</a>

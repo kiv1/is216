@@ -7,8 +7,8 @@ router.get('/', async (req, res) => {
     res.sendFile(path.join(__dirname, '../public/views/home', 'index.html'), { dotfiles: 'allow' });
 });
 
-router.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/views/home', 'about.html'), { dotfiles: 'allow' });
+router.get('/places', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/views/home', 'places.html'), { dotfiles: 'allow' });
 });
 
 module.exports = router;
