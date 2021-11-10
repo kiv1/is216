@@ -16,7 +16,12 @@
             <loading-component v-show="isLoading"></loading-component>
             <div class="content">
                 <!-- <div id="home-img"></div> -->
-                <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
+                <div
+                    id="homeCarousel"
+                    class="container carousel slide"
+                    data-bs-ride="carousel"
+                    data-bs-interval="false"
+                >
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <img src="../../img/study bddy coverpage.jpg" class="d-block w-100" @load="onImgLoad(0)" />

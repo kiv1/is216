@@ -92,6 +92,10 @@ router.get('/profilepage', checkCookie, (req, res) => {
     res.sendFile(path.join(__dirname, '../public/views/user', 'profilepage.html'), { dotfiles: 'allow' });
 });
 
+router.get('/demo', checkCookie, (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/views/user', 'demo.html'), { dotfiles: 'allow' });
+});
+
 function checkCookie(req, res, next) {
     const sessionCookie = req.cookies.session || '';
     firebaseLL

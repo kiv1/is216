@@ -26,6 +26,7 @@ export default {
             query: 'places to study',
             userLocation: {},
             isLoading: false,
+            markers: [],
         };
     },
     mounted() {
@@ -49,7 +50,7 @@ export default {
                     console.log(err);
                 });
         },
-        getMap() {
+        async getMap() {
             console.log(`getMap`);
             this.getUserLocation();
 
@@ -57,19 +58,35 @@ export default {
                 this.map = new google.maps.Map(document.getElementById('map'), this.mapOptions);
                 this.infowindow = new google.maps.InfoWindow();
 
-                let markers = [];
+                this.markers = [];
 
-                if (markers.length === 0) {
+                if (this.markers.length === 0) {
                     let placesService = new google.maps.places.PlacesService(this.map);
                     placesService.textSearch(this.placesRequest, (results, status) => {
                         console.log(status, google.maps.places.PlacesServiceStatus.OK);
                         if (status == google.maps.places.PlacesServiceStatus.OK) {
                             for (let i = 0; i < results.length; i++) {
                                 const place = results[i];
-                                markers.push(this.createMarker(place));
+                                let placeId = place.place_id;
+                                let request = {
+                                    placeId: placeId,
+                                    fields: [
+                                        'geometry',
+                                        'business_status',
+                                        'formatted_address',
+                                        'opening_hours',
+                                        'url',
+                                        'website',
+                                        'rating',
+                                        'reviews',
+                                        'photos',
+                                    ],
+                                };
+                                placesService.getDetails(request, this.callback);
+                                //markers.push(this.createMarker(place));
                             }
                             this.map.setCenter(results[0].geometry.location);
-                            console.log(results[0])
+                            console.log(results[0]);
                         }
                     });
                 }
@@ -102,10 +119,10 @@ export default {
                     }
 
                     // Clear out the old markers.
-                    markers.forEach((marker) => {
+                    this.markers.forEach((marker) => {
                         marker.setMap(null);
                     });
-                    markers = [];
+                    this.markers = [];
 
                     // For each place, get the icon, name and location.
                     const bounds = new google.maps.LatLngBounds();
@@ -119,7 +136,7 @@ export default {
                         // Create a marker for each place.
                         let marker = this.createMarker(place);
 
-                        markers.push(marker);
+                        this.markers.push(marker);
                         if (place.geometry.viewport) {
                             // Only geocodes have viewport.
                             bounds.union(place.geometry.viewport);
@@ -128,10 +145,16 @@ export default {
                         }
                     });
                     this.map.fitBounds(bounds);
-                    console.log(markers[0])
-                    this.map.setCenter(markers[0].getPosition());
+                    console.log(this.markers[0]);
+                    this.map.setCenter(this.markers[0].getPosition());
                 });
             });
+        },
+        callback(place, status) {
+            if (status == google.maps.places.PlacesServiceStatus.OK) {
+                console.log(place);
+                this.markers.push(this.createMarker(place));
+            }
         },
         createMarker(place) {
             if (!place.geometry || !place.geometry.location) return;
