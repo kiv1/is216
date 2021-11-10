@@ -25,6 +25,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/places">Places To Study</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/weather">Check The Weather</a>
+                    </li>
                     <li v-if="isLogin" class="nav-item">
                         <a class="nav-link" href="/user/dashboard">Dashboard</a>
                     </li>

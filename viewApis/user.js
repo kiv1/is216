@@ -9,9 +9,13 @@ const { resolve } = require('path');
 const { rejects } = require('assert');
 const { exit } = require('process');
 
+router.get('/GetWeatherAPI', (req, res) => {
+    res.send(process.env.WEATHER_API_KEY);
+});
+
 router.get('/GetGoogleAPI', (req, res) => {
-    res.send(process.env.GOOGLE_API_KEY)
-})
+    res.send(process.env.GOOGLE_API_KEY);
+});
 
 router.get('/GetGoogleData', (req, res) => {
     res.send(firebaseLL.getGoogleData());

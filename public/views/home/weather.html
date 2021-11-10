@@ -1,0 +1,145 @@
+<html>
+    <head>
+        <title>SMU Study Buddy</title>
+        <link rel="shortcut icon" type="image/png" href="/img/logo.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <script src="/dist/bundle.js"></script>
+        <link rel="stylesheet" href="/css/bootstrap-icons.css" />
+        <link rel="stylesheet" href="/css/custom.css" />
+    </head>
+
+    <body>
+        <div id="app">
+            <navbar-component></navbar-component>
+            <loading-component v-show="isLoading"></loading-component>
+            <div class="content">
+                <div class="container">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" />
+                        <label for="floatingInput">Address</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="floatingPassword"
+                            placeholder="Password"
+                            :min="date.min"
+                            :max="date.max"
+                            v-model="date.chosen"
+                        />
+                        <label for="floatingPassword">Password</label>
+                    </div>
+                    <button type="button" class="btn btn-primary" @click="getPlace()">Get weather</button>
+                </div>
+            </div>
+            <footer-component></footer-component>
+        </div>
+    </body>
+    <script>
+        const app = Vue.createApp({
+            el: '#app',
+            data() {
+                return {
+                    date: {
+                        min: new Date().toISOString().split('T')[0],
+                        max: new Date().toISOString().split('T')[0],
+                        chosen: new Date().toISOString().split('T')[0],
+                    },
+                    loader: null,
+                };
+            },
+            mounted() {
+                // this.isLoading = true;
+                let min_date = new Date()
+                this.date.min = min_date.toISOString().split('T')[0];
+                let max_date = new Date();
+                max_date.setDate(new Date().getDate() + 7);
+                this.date.max = max_date.toISOString().split('T')[0];
+            },
+            methods: {
+                getGoogleAPI() {
+
+                },
+                getPlace() {
+                    axios
+                        .get('../services/GetGoogleAPI')
+                        .then((result) => {
+                            const apiKey = result.data;
+                            this.loader = new mapLoader({
+                                apiKey,
+                                version: 'weekly',
+                                libraries: ['places'],
+                            });
+
+                            this.loader.load().then(() => {
+                                let geocoder = new google.maps.Geocoder();
+
+                                geocoder
+                                    .geocode({ address: 'smu scis' })
+                                    .then((result) => {
+                                        console.log(result);
+                                        const lat = result.results[0].geometry.location.lat();
+                                        const lng = result.results[0].geometry.location.lng();
+                                        console.log(lat, lng);
+
+                                        axios.get('../services/GetWeatherAPI').then((result) => {
+                                            axios
+                                            .post(
+                                                `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude=&appid=${result.data}`
+                                            )
+                                            .then((result) => {
+                                                console.log(result.data);
+                                                console.log(this.date.chosen);
+                                                let daysAfter = new Date(this.date.chosen);
+                                                let dateDiff = daysAfter.getDate() - new Date().getDate()
+                                                console.log(dateDiff)
+                                                let weatherTitle = result.data.daily[dateDiff].weather[0].main;
+                                                console.log(weatherTitle)
+                                            })
+                                            .catch((err) => {
+                                                console.log(err);
+                                            });
+                                        }).catch((err) => {
+                                            console.log(err);
+
+                                        });
+
+
+
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                    });
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                },
+            },
+        });
+        app.component('google-map', googleMap);
+        app.component('navbar-component', navbar);
+        app.component('loading-component', loadingPage);
+        app.component('footer-component', footer);
+        app.mount('#app');
+    </script>
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"
+    ></script>
+</html>
