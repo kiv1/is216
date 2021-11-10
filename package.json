@@ -3,6 +3,7 @@
     "version": "0.0.0",
     "private": true,
     "dependencies": {
+        "@googlemaps/js-api-loader": "^1.12.8",
         "@popperjs/core": "^2.10.1",
         "axios": "^0.21.4",
         "bootstrap": "^5.1.1",
@@ -23,7 +24,8 @@
         "uuid": "^8.3.2",
         "vue": "^3.2.11",
         "vue-loader": "^16.5.0",
-        "vue-upload-component": "^3.0.50"
+        "vue-upload-component": "^3.0.50",
+        "vue3-google-map": "^0.8.2"
     },
     "devDependencies": {
         "@vue/compiler-sfc": "^3.2.11",
