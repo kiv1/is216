@@ -83,6 +83,7 @@ export default {
                     new google.maps.Marker({
                         position: this.userLocation,
                         map: this.map,
+                        label: 'You',
                     }),
                 ];
 
@@ -229,7 +230,7 @@ export default {
                 infoHtml += `</div>`;
                 this.infowindow.setContent(infoHtml);
                 this.infowindow.open(this.map, marker);
-                this.map.setCenter(place.geometry.location);
+                this.map.panTo(place.geometry.location);
             });
 
             return marker;
