@@ -3,7 +3,7 @@
     height: 100vh;
 }
 #mapContainer {
-    margin-top: 60px
+    margin-top: 60px;
 }
 #input-wrapper {
     width: 30%;
@@ -50,7 +50,6 @@ h1 {
 .section.reviews .container {
     padding-bottom: 4.5rem;
 }
-
 
 .section.reviews .row {
     align-items: center;

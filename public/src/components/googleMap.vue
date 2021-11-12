@@ -14,7 +14,7 @@ export default {
             singaporePosition: { lat: 1.352083, lng: 103.819839 },
             map: '',
             mapOptions: {
-                center: this.singaporePosition,
+                center: { lat: 1.352083, lng: 103.819839 },
                 zoom: 15,
                 componentRestrictions: { country: 'SG' },
             },
@@ -24,7 +24,7 @@ export default {
                 query: ['places to study'],
             },
             query: 'places to study',
-            userLocation: {},
+            userLocation: null,
             isLoading: false,
             markers: [],
             placesService: null,
@@ -65,16 +65,28 @@ export default {
                 });
         },
         async getMap() {
-            this.getUserLocation();
-
+            await this.getUserLocation();
             this.loader.load().then(() => {
+                console.log(this.mapOptions);
+                console.log(this.userLocation);
+                if (this.userLocation != null) {
+                    this.mapOptions.center = this.userLocation;
+                    this.placesRequest.location = this.userLocation;
+                }
+                console.log(this.mapOptions);
+
                 this.map = new google.maps.Map(document.getElementById('map'), this.mapOptions);
                 this.infowindow = new google.maps.InfoWindow();
                 this.placesService = new google.maps.places.PlacesService(this.map);
 
-                this.markers = [];
+                this.markers = [
+                    new google.maps.Marker({
+                        position: this.userLocation,
+                        map: this.map,
+                    }),
+                ];
 
-                if (this.markers.length === 0) {
+                if (this.markers.length === 1) {
                     this.placesService.textSearch(this.placesRequest, (results, status) => {
                         if (status == google.maps.places.PlacesServiceStatus.OK) {
                             for (let i = 0; i < results.length; i++) {
@@ -86,7 +98,7 @@ export default {
                                 };
                                 this.placesService.getDetails(request, this.callback);
                             }
-                            this.map.setCenter(results[0].geometry.location);
+                            //this.map.setCenter(results[0].geometry.location);
                         }
                     });
                 }
@@ -177,7 +189,7 @@ export default {
                 if (place.price_level && place.price_level > 0) {
                     infoHtml += `<p>Price: ${place.price_level}/5</p>`;
                 }
-                if (place.rating & (place.rating > 0) && place.user_ratings_total) {
+                if (place.rating && place.rating > 0 && place.user_ratings_total) {
                     infoHtml += `<p><span>Rated</span><span class="rating"> `;
                     for (let i = 0; i < Math.floor(place.rating); i++) {
                         infoHtml += `<i class="bi bi-star-fill me-1 text-warning"></i>`;
@@ -192,50 +204,54 @@ export default {
                     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="false">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <img class="d-block mx-auto" style="height:250px" src=${place.photos[0].getUrl()}>
+                                <img class="d-block mx-auto img-fluid" style="height:250px" src=${place.photos[0].getUrl()}>
                             </div>
-                        
+
                     `;
                     for (let i = 1; i < place.photos.length; i++) {
                         const photo = place.photos[i];
                         infoHtml += `
                         <div class="carousel-item">
-                            <img class="d-block mx-auto" style="height:250px" src=${photo.getUrl()}">
+                            <img class="d-block mx-auto img-fluid" style="height:250px" src=${photo.getUrl()}">
                         </div>
                         `;
                     }
                     infoHtml += `
                         </div>
                         <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
+                            <span class="carousel-control-prev-icon text-light bg-dark" aria-hidden="true"></span>
                         </a>
                         <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
+                            <span class="carousel-control-next-icon text-light bg-dark" aria-hidden="true"></span>
                         </a>
                     </div>`;
                 }
                 infoHtml += `</div>`;
                 this.infowindow.setContent(infoHtml);
                 this.infowindow.open(this.map, marker);
+                this.map.setCenter(place.geometry.location);
             });
 
             return marker;
         },
-        getUserLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        this.userLocation = {
-                            lat: position.coords.lat,
-                            lng: position.coords.longitude,
-                        };
-                    },
-                    () => {
-                        this.userLocation = this.singaporePosition;
-                    }
-                );
+        getCoordinates() {
+            return new Promise(function (resolve, reject) {
+                navigator.geolocation.getCurrentPosition(resolve, reject);
+            });
+        },
+        async getUserLocation() {
+            try {
+                let position = await this.getCoordinates();
+                if (position) {
+                    this.userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+                } else {
+                    this.userLocation = null;
+                }
+            } catch (error) {
+                this.userLocation = null;
             }
         },
     },
