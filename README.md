@@ -43,7 +43,7 @@ node app.js
 `logic` folder contains the logic for backend api  
 `src` folder contains the components and the `index.js` for webpack to bundle  
 `routes` folder is to route user link to the appropriate resources  
-`viewApis` folder is to get api from the backend by using axios  
+`services` folder is to get api from the backend by using axios  
 
 # Things to note
 
