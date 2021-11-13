@@ -28,7 +28,7 @@
                     <div class="w-100 d-flex flex-column justify-content-center align-items-center my-auto">
                         <ul class="list-group w-100">
                             <template v-for="oneUser in userAvailable">
-                                <li @click="goToOtherProfile(oneUser.uid)" class="list-group-item">
+                                <li @click="goToOtherProfile(oneUser.uid)" class="list-group-item clickable">
                                     <div class="row">
                                         <div class="col"
                                             >{{oneUser.name}} <br />

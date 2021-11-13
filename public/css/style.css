@@ -570,3 +570,7 @@
     height: calc(100vh * 0.4);
     overflow-y: scroll;
 }
+
+.clickable {
+    cursor: pointer;
+}
