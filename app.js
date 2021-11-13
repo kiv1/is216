@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 
 var homeRouter = require('./routes/index');
 var userRouter = require('./routes/user');
-var userApi = require('./viewApis/user');
+var userApi = require('./services/user');
 
 const PORT = process.env.PORT || 8080;
 

@@ -88,8 +88,10 @@
                 var currentUrl = window.location.href;
                 var urlObj = new URL(currentUrl);
                 this.address = unescape(urlObj.searchParams.get('location'));
-                if (this.address) {
+                if (this.address != 'null') {
                     this.getPlace();
+                } else {
+                    this.address = '';
                 }
             },
             methods: {
