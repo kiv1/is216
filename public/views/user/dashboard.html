@@ -28,7 +28,7 @@
                     <div class="w-100 d-flex flex-column justify-content-center align-items-center my-auto">
                         <ul class="list-group w-100">
                             <template v-for="oneUser in userAvailable">
-                                <li class="list-group-item">
+                                <li @click="goToOtherProfile(oneUser.uid)" class="list-group-item">
                                     <div class="row">
                                         <div class="col"
                                             >{{oneUser.name}} <br />
@@ -41,7 +41,7 @@
                                             <br />
                                             <button
                                                 type="button button-sm"
-                                                @click="showModal(oneUser.uid, oneUser.name)"
+                                                @click.stop="showModal(oneUser.uid, oneUser.name)"
                                                 class="btn btn-outline-primary"
                                             >
                                                 <i class="bi bi-book"></i>&nbsp Connect</button
@@ -78,6 +78,9 @@
                 });
             },
             methods: {
+                goToOtherProfile(uid) {
+                    window.location.href = '/user/profilepage?uid=' + uid;
+                },
                 changeLoading() {
                     this.isLoading = !this.isLoading;
                 },
