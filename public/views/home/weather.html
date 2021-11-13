@@ -80,10 +80,17 @@
                     loader: null,
                     weatherData: null,
                     dailyWeather: null,
+                    isLoading: false,
                 };
             },
             mounted() {
                 this.setUpDates();
+                var currentUrl = window.location.href;
+                var urlObj = new URL(currentUrl);
+                this.address = unescape(urlObj.searchParams.get('location'));
+                if (this.address) {
+                    this.getPlace();
+                }
             },
             methods: {
                 formatDateString(date) {
@@ -102,12 +109,15 @@
                     this.date.chosen = this.formatDateString(min_date);
                 },
                 async getPlace() {
+                    this.isLoading = true;
                     if (this.address.length === 0) {
                         toast('Please key in an address!', {
                             position: 'top-right',
                             type: 'danger',
                             showIcon: 'true',
                         });
+                        this.isLoading = false;
+
                         return;
                     }
                     let { data: googleAPIKey } = await axios.get('../services/GetGoogleAPI');
@@ -115,6 +125,7 @@
 
                     if (!googleAPIKey || !weatherAPIKey) {
                         console.log('Error getting API keys');
+                        this.isLoading = false;
                         return;
                     }
                     this.loader = new mapLoader({
@@ -141,6 +152,7 @@
 
                     let dailyWeather = weatherRes.data.daily[dateDiff];
                     this.dailyWeather = dailyWeather;
+                    this.isLoading = false;
                 },
             },
         });
