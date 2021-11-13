@@ -161,19 +161,19 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img class="img-fluid" src="img/istockphoto-1249553392-170667a.jpg" alt="">
+                                <img class="img-fluid" src="img/istockphoto-1249553392-170667a.jpg" alt="" />
                             </div>
                             <div class="col-lg-8">
                                 <div
                                     id="reviewCarousel"
                                     class="carousel slide"
                                     data-bs-ride="carousel"
-                                    data-bs-interval="5000"
+                                    data-bs-interval="3000"
                                 >
                                     <div class="carousel-indicators">
                                         <button
                                             type="button"
-                                            data-bs-target="#carouselExampleIndicators"
+                                            data-bs-target="#reviewCarousel"
                                             data-bs-slide-to="0"
                                             class="active"
                                             aria-current="true"
@@ -181,42 +181,75 @@
                                         ></button>
                                         <button
                                             type="button"
-                                            data-bs-target="#carouselExampleIndicators"
+                                            data-bs-target="#reviewCarousel"
                                             data-bs-slide-to="1"
                                             aria-label="Slide 2"
+                                        ></button>
+                                        <button
+                                            type="button"
+                                            data-bs-target="#reviewCarousel"
+                                            data-bs-slide-to="2"
+                                            aria-label="Slide 3"
                                         ></button>
                                     </div>
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
                                             <div class="review-container">
                                                 <div class="review-text fs-5">
-                                                    1Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
-                                                    eaque nulla officiis dolores suscipit libero amet. Natus non
-                                                    sapiente, debitis.
+                                                    “I love how SMU Study Buddy is so easy to navigate. ”
                                                 </div>
 
                                                 <div class="review-name-container">
                                                     <span class="review-dash">&#8212;</span>
-                                                    <span class="review-name">John Doe</span>
+                                                    <span class="review-name">Sharon Ng</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="carousel-item">
                                             <div class="review-container">
                                                 <div class="review-text fs-5">
-                                                    2Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
-                                                    eaque nulla officiis dolores suscipit libero amet. Natus non
-                                                    sapiente, debitis.
+                                                    “Thanks to SMU Study Buddy, I finally found someone I can study with
+                                                    during this pandemic.”
                                                 </div>
 
                                                 <div class="review-name-container">
                                                     <span class="review-dash">&#8212;</span>
-                                                    <span class="review-name">John Doe</span>
+                                                    <span class="review-name">Timothy Goh</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <div class="review-container">
+                                                <div class="review-text fs-5">
+                                                    “I really like the features in SMU Study Buddy, they are so useful”
+                                                </div>
+
+                                                <div class="review-name-container">
+                                                    <span class="review-dash">&#8212;</span>
+                                                    <span class="review-name">Jessica Chua</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <button
+                                    class="carousel-control-prev"
+                                    type="button"
+                                    data-bs-target="#reviewCarousel"
+                                    data-bs-slide="prev"
+                                >
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button
+                                    class="carousel-control-next"
+                                    type="button"
+                                    data-bs-target="#reviewCarousel"
+                                    data-bs-slide="next"
+                                >
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -252,4 +285,19 @@
         app.component('footer-component', footer);
         app.mount('#app');
     </script>
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"
+    ></script>
 </html>
