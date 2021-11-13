@@ -32,21 +32,9 @@ h1 {
     text-align: right;
     background: white;
     padding: 50px;
-    background-image: linear-gradient(90deg, transparent, silver);
+    background-image: linear-gradient(90deg, transparent, lightblue);
 }
 
-#reviewCircleTitle {
-    background-color: lightcoral;
-    border-radius: 100%;
-    width: 200px;
-    height: 200px;
-    display: flex;
-    align-items: center;
-    padding: 5%;
-    font-size: 1.7rem;
-    color: white;
-    font-weight: 700;
-}
 .section.reviews .container {
     padding-bottom: 4.5rem;
 }
@@ -57,4 +45,36 @@ h1 {
 
 .about-us .section .image-container {
     margin: none;
+}
+
+.flip-card {
+    background-color: transparent;
+    min-height: 400px;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+    display: hidden;
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+}
+
+.flip-card-back {
+    transform: rotateY(180deg);
 }
