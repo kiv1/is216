@@ -63,7 +63,7 @@
                                         <a :href="'https://t.me/'+userTelegram" target="_blank">@{{userTelegram}}</a>
                                     </label>
                                     <button
-                                        v-if="isAwaitingAction || (!isUserBuddy && !isUserPending && !isAwaitingAction)"
+                                        v-if="isAwaitingAction || (!isUserBuddy && !isUserPending && !isAwaitingAction && !isUser)"
                                         type="button button-sm"
                                         @click="showModal()"
                                         class="ms-2 mb-3 btn btn-outline-primary w-100"
@@ -147,6 +147,7 @@
                     isRatingModalOpen: false,
                     isUserBuddy: false,
                     hasRated: true,
+                    isUser: false,
                 };
             },
             mounted() {
@@ -206,7 +207,7 @@
                             this.userReviews = data.reviews;
                             this.isUserBuddy = data.isUserBuddy;
                             this.hasRated = data.hasRated;
-                            console.log(data);
+                            this.isUser = data.isUser;
                         })
                         .catch((error) => {
                             this.isLoading = false;

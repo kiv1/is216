@@ -345,6 +345,10 @@ router.get('/GetUserProfile', async (req, res) => {
             let allReviewResult = await azureLL.getAllReview(uid);
             let userMods = await azureLL.getUserMods(uid);
             let ratingResult = await azureLL.getAvgRating(uid);
+            let isUser = false;
+            if (uid == user.uid) {
+                isUser = true;
+            }
             res.send({
                 user: userProfile.result[0],
                 mods: userMods.result,
@@ -354,6 +358,7 @@ router.get('/GetUserProfile', async (req, res) => {
                 isUserPending: isUserPending,
                 isAwaitingAction: isAwaitingAction,
                 reviews: allReviewResult.result,
+                isUser: isUser,
             });
         }
     } catch (err) {
