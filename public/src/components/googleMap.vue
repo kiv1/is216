@@ -184,7 +184,11 @@ export default {
                     }
                 }
                 if (place.formatted_address) {
-                    infoHtml += `<p>Located at ${place.formatted_address}</p><a class="btn btn-info text-white" target="_blank" href="/weather?location=${place.formatted_address}">Get Weather&nbsp&nbsp<i class="bi bi-cloud-fill"></i></a><br/>`;
+                    infoHtml += `<p>Located at ${
+                        place.formatted_address
+                    }</p><a class="btn btn-info text-white" target="_blank" href="/weather?location=${escape(
+                        place.formatted_address
+                    )}">Get Weather&nbsp&nbsp<i class="bi bi-cloud-fill"></i></a><br/>`;
                 }
                 if (place.price_level && place.price_level > 0) {
                     infoHtml += `<p>Price: ${place.price_level}/5</p>`;
