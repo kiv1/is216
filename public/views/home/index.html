@@ -15,16 +15,29 @@
             <navbar-component></navbar-component>
             <loading-component v-show="isLoading"></loading-component>
             <div class="content">
-                <!-- <div id="home-img"></div> -->
-                <div
-                    id="homeCarousel"
-                    class="container carousel slide"
-                    data-bs-ride="carousel"
-                    data-bs-interval="false"
-                >
+                <div id="homeCarousel" class="container carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+                    <div class="carousel-indicators">
+                        <button
+                            type="button"
+                            data-bs-target="#homeCarousel"
+                            data-bs-slide-to="0"
+                            class="active"
+                            aria-current="true"
+                            aria-label="Slide 1"
+                        ></button>
+                        <button
+                            type="button"
+                            data-bs-target="#homeCarousel"
+                            data-bs-slide-to="1"
+                            aria-label="Slide 2"
+                        ></button>
+                    </div>
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <img src="../../img/study bddy coverpage.jpg" class="d-block w-100" @load="onImgLoad(0)" />
+                        </div>
+                        <div class="carousel-item">
+                            <img src="../../img/study bddy coverpage2.jpg" class="d-block w-100" @load="onImgLoad(0)" />
                         </div>
                     </div>
                 </div>
