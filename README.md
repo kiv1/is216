@@ -16,7 +16,7 @@
 > VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode
 
 [nodelink]: https://nodejs.org/dist/v14.17.6/node-v14.17.6-x64.msi
-[yarnlink]: https://yarnpkg.com/getting-started/install
+[yarnlink]: https://classic.yarnpkg.com/en/docs/install
 [vscodelink]: https://code.visualstudio.com
 [previewLink]: https://is216.azurewebsites.net/
 
