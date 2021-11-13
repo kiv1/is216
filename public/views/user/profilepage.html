@@ -63,7 +63,7 @@
                                         <a :href="'https://t.me/'+userTelegram" target="_blank">@{{userTelegram}}</a>
                                     </label>
                                     <button
-                                        v-if="isAwaitingAction"
+                                        v-if="isAwaitingAction || (!isUserBuddy && !isUserPending && !isAwaitingAction)"
                                         type="button button-sm"
                                         @click="showModal()"
                                         class="ms-2 mb-3 btn btn-outline-primary w-100"
